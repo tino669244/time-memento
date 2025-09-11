@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    
+    <!-- Title hita eo amin'ny navigateur sy Google -->
+    <title>RuineTime Off - Time Memento Life Chronometer</title>
+    
+    <!-- Description miseho ao amin'ny Google search -->
+    <meta name="description" content="RuineTime Off (Time Memento) est une application web qui affiche le temps déjà vécu et estime le temps restant en fonction de votre espérance de vie. Un chronomètre de vie moderne et minimaliste.">
+    
+    <!-- Keywords manampy amin'ny SEO -->
+    <meta name="keywords" content="chronomètre de vie, life timer, compteur âge, RuineTime Off, Time Memento, espérance de vie, time tracker, life countdown, web app">
+    
+    <!-- Fanampiny tsara -->
+    <meta name="author" content="Tinoruine">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+    
+    <!-- CSS Styles -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app">
+        <div class="container">
+            <!-- Header -->
+            <div class="header">
+                <div class="title-container">
+                    <span class="skull-icon">💀</span>
+                    <h1 class="title">RuineTime Off</h1>
+                    <span class="hourglass-icon">⏳💀</span>
+                </div>
+                <p class="subtitle">
+                    Une application qui affiche le temps vécu et restant basé sur votre espérance de vie.
+                    <br>
+                    <span class="highlight">
+                        Rappel que le temps est limité, et qu'il faut en profiter à chaque instant.
+                    </span>
+                </p>
+            </div>
+
+            <!-- Configuration Section -->
+            <div class="config-section">
+                <div class="input-group">
+                    <label for="birthdate">Date de naissance :</label>
+                    <input type="date" id="birthdate" data-testid="input-birthdate">
+                </div>
+                <div class="input-group">
+                    <label for="lifeExpectancy">Espérance de vie : <span id="lifeExpectancyValue">80</span> ans</label>
+                    <input type="range" id="lifeExpectancy" min="50" max="120" value="80" data-testid="slider-life-expectancy">
+                </div>
+            </div>
+
+            <!-- Welcome Card (shown when no birthdate) -->
+            <div id="welcomeCard" class="card welcome-card">
+                <div class="welcome-content">
+                    <span class="big-skull">💀</span>
+                    <h3>Entrez votre date de naissance</h3>
+                    <p>Pour commencer à voir le temps défiler et prendre conscience de sa valeur</p>
+                </div>
+            </div>
+
+            <!-- Main Content (shown when birthdate is set) -->
+            <div id="mainContent" style="display: none;">
+                <!-- Current Age Display -->
+                <div class="card age-card">
+                    <div class="age-content">
+                        <div class="age-header">
+                            <span class="clock-icon">🕒</span>
+                            <h2>Votre âge réel</h2>
+                        </div>
+                        <div class="age-display" data-testid="text-current-age" id="currentAge">
+                            0.00000000 ans
+                        </div>
+                        <p class="age-subtitle">
+                            Âge précis en temps réel - chaque seconde compte
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Time Lived Counter -->
+                <div class="card time-card">
+                    <h2 class="time-title">Temps réellement vécu</h2>
+                    <p class="time-subtitle">Mesure précise depuis votre naissance - votre véritable chronométro de vie</p>
+                    <div class="time-grid" id="livedTimeGrid">
+                        <div class="time-unit">
+                            <div class="time-value" data-testid="text-lived-années-value" id="livedYears">0</div>
+                            <div class="time-label">Années</div>
+                        </div>
+                        <div class="time-unit">
+                            <div class="time-value" data-testid="text-lived-jours-value" id="livedDays">0</div>
+                            <div class="time-label">Jours</div>
+                        </div>
+                        <div class="time-unit">
+                            <div class="time-value" data-testid="text-lived-heures-value" id="livedHours">0</div>
+                            <div class="time-label">Heures</div>
+                        </div>
+                        <div class="time-unit">
+                            <div class="time-value" data-testid="text-lived-minutes-value" id="livedMinutes">0</div>
+                            <div class="time-label">Minutes</div>
+                        </div>
+                        <div class="time-unit">
+                            <div class="time-value" data-testid="text-lived-secondes-value" id="livedSeconds">0</div>
+                            <div class="time-label">Secondes</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Statistical Progress -->
+                <div class="card progress-card">
+                    <div class="progress-header">
+                        <span class="progress-label">Comparaison statistique (espérance de vie: <span id="lifeExpectancyDisplay">80</span> ans)</span>
+                        <span class="progress-percent" data-testid="text-statistical-progress" id="statisticalPercent">0.0%</span>
+                    </div>
+                    <div class="progress-bar" data-testid="progress-statistical-comparison">
+                        <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                    </div>
+                    <div class="progress-warning">
+                        ⚠️ Ceci n'est qu'une estimation statistique - la réalité de votre vie ne se limite pas à ces chiffres
+                    </div>
+                </div>
+
+                <!-- Estimated Remaining Time -->
+                <div class="card remaining-card" id="remainingCard">
+                    <h3 class="remaining-title">Estimation statistique restante</h3>
+                    <p class="remaining-subtitle">
+                        (Basé sur une espérance de <span id="lifeExpectancyRemaining">80</span> ans - ne constitue pas une limite réelle)
+                    </p>
+                    <div class="time-grid" id="remainingTimeGrid">
+                        <div class="time-unit">
+                            <div class="time-value remaining-value" data-testid="text-statistical-années-value" id="remainingYears">0</div>
+                            <div class="time-label">Années</div>
+                        </div>
+                        <div class="time-unit">
+                            <div class="time-value remaining-value" data-testid="text-statistical-jours-value" id="remainingDays">0</div>
+                            <div class="time-label">Jours</div>
+                        </div>
+                        <div class="time-unit">
+                            <div class="time-value remaining-value" data-testid="text-statistical-heures-value" id="remainingHours">0</div>
+                            <div class="time-label">Heures</div>
+                        </div>
+                        <div class="time-unit">
+                            <div class="time-value remaining-value" data-testid="text-statistical-minutes-value" id="remainingMinutes">0</div>
+                            <div class="time-label">Minutes</div>
+                        </div>
+                        <div class="time-unit">
+                            <div class="time-value remaining-value" data-testid="text-statistical-secondes-value" id="remainingSeconds">0</div>
+                            <div class="time-label">Secondes</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Motivational Footer -->
+                <div class="footer">
+                    <blockquote class="quote">
+                        "Le temps ne s'arrête jamais. Chaque seconde qui passe est une seconde réellement vécue."
+                    </blockquote>
+                    <div class="footer-message">
+                        Votre chronométro personnel continue à tourner - profitez de chaque moment ⚡
+                    </div>
+                    <div class="footer-subtitle">
+                        La vie n'a pas de limite fixe - elle continue tant que vous respirez
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>
