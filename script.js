@@ -4,20 +4,22 @@ function calculateDeathDate() {
   const birthInput = document.getElementById("birthdate").value;
   const resultDiv = document.getElementById("result");
   const countdownDiv = document.getElementById("countdown");
+  const progressBar = document.getElementById("progress-bar");
 
   if (!birthInput) {
     resultDiv.innerHTML = "⚠️ Veuillez entrer une date valide.";
     countdownDiv.innerHTML = "";
+    progressBar.style.width = "0%";
     return;
   }
 
   // Effacer countdown teo aloha raha nisy
   clearInterval(countdownInterval);
 
-  // Convertir la date de naissance
+  // Date de naissance
   const birthDate = new Date(birthInput);
 
-  // 51 ans après
+  // Durée de vie par défaut: 51 ans
   const deathDate = new Date(birthDate);
   deathDate.setFullYear(deathDate.getFullYear() + 51);
 
@@ -28,7 +30,10 @@ function calculateDeathDate() {
 
   resultDiv.innerHTML = `☠️ Vous êtes mort le : <span style="color:#ff5555">${day}/${month}/${year}</span>`;
 
-  // Mampandeha ny compte à rebours
+  // Calcul total de la vie en millisecondes
+  const totalLife = deathDate.getTime() - birthDate.getTime();
+
+  // Mampandeha ny compte à rebours + progress bar
   function updateCountdown() {
     const now = new Date().getTime();
     const distance = deathDate.getTime() - now;
@@ -36,6 +41,7 @@ function calculateDeathDate() {
     if (distance <= 0) {
       clearInterval(countdownInterval);
       countdownDiv.innerHTML = "💀 Votre temps est écoulé !";
+      progressBar.style.width = "0%";
       return;
     }
 
@@ -45,6 +51,12 @@ function calculateDeathDate() {
     const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
     countdownDiv.innerHTML = `⏳ Temps restant : ${days}j ${hours}h ${minutes}m ${seconds}s`;
+
+    // Progress bar (% de vie restante)
+    const elapsedLife = now - birthDate.getTime();
+    const lifePercent = ((totalLife - elapsedLife) / totalLife) * 100;
+
+    progressBar.style.width = `${lifePercent}%`;
   }
 
   updateCountdown();
