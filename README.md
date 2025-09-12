@@ -1,44 +1,10 @@
-# ⏳ RuineTime Off - Time Memento
+# RuineTime Off ⏳💀
 
-**RuineTime Off** (aussi appelé *Time Memento*) est une application web simple qui agit comme un **chronomètre de vie**.  
-Elle calcule une estimation du temps restant à vivre en fonction de votre **date de naissance** et de votre **espérance de vie**.
+**RuineTime Off** (Time Memento) est une web app simple qui affiche en temps réel :
+- Le temps déjà vécu depuis votre date de naissance (années avec précision, jours, heures, minutes, secondes).
+- Un encart **"Si vous mouriez maintenant"** montrant la date & heure actuelles et votre âge actuel.
 
-👉 Disponible en ligne ici : [Time Memento](https://tino669244.github.io/time-memento/)
+Technologies : **HTML / CSS / JavaScript**.  
+Déployable sur Replit / GitHub Pages / Vercel.
 
----
-
-## ✨ Fonctionnalités
-- Entrer votre **date de naissance**  
-- Choisir votre **espérance de vie** (par défaut : 80 ans)  
-- Afficher le **temps estimé restant** (années, mois, jours, heures, secondes)  
-- Interface simple et intuitive  
-
----
-
-## 🛠️ Technologies utilisées
-- **HTML5**  
-- **CSS3**  
-- **JavaScript**  
-- Hébergé via **GitHub Pages**  
-
----
-
-## 📸 Aperçu
-![screenshot](https://tino669244.github.io/time-memento/screenshot.png)
-
-*(Ajoute un vrai screenshot de l’app si besoin 😉)*
-
----
-
-## ⚠️ Avertissement
-Cet outil n’est qu’une **estimation statistique**.  
-Il n’a pas de valeur médicale et ne doit pas être utilisé comme prédiction réelle de durée de vie.
-
----
-
-## 🚀 Déploiement
-Le site est automatiquement déployé grâce à **GitHub Pages** :
----
-
-👨‍💻 Développé par **[tino669244](https://github.com/tino669244)**
-
+> Note : Le projet n'affiche plus d'espérance de vie — il met l'accent sur l'instant présent.
