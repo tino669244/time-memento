@@ -38,3 +38,7 @@ Il n’a pas de valeur médicale et ne doit pas être utilisé comme prédiction
 
 ## 🚀 Déploiement
 Le site est automatiquement déployé grâce à **GitHub Pages** :
+---
+
+👨‍💻 Développé par **[tino669244](https://github.com/tino669244)**
+
