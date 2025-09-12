@@ -1,10 +1,10 @@
-# RuineTime Off ⏳💀
+# RuineTime Off — Memento (édition démoniaque)
 
-**RuineTime Off** (Time Memento) est une web app simple qui affiche en temps réel :
-- Le temps déjà vécu depuis votre date de naissance (années avec précision, jours, heures, minutes, secondes).
-- Un encart **"Si vous mouriez maintenant"** montrant la date & heure actuelles et votre âge actuel.
+**RuineTime Off** affiche en temps réel :
+- Le **temps déjà vécu** (années précises, jours, heures, minutes, secondes, millisecondes).
+- L'encart **"Si vous mouriez maintenant"** : la date & heure EXACTE actuelle (heure précise avec millisecondes).
 
-Technologies : **HTML / CSS / JavaScript**.  
-Déployable sur Replit / GitHub Pages / Vercel.
+> Interface dark / dramatique — ambiance "démoniaque".  
+> Tech : **HTML / CSS / JavaScript**. Deployable sur Replit / GitHub Pages / Vercel.
 
-> Note : Le projet n'affiche plus d'espérance de vie — il met l'accent sur l'instant présent.
+**Usage** : entrer simplement la date de naissance ; l'affichage démarre automatiquement.
