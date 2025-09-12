@@ -1,21 +1,52 @@
-function calculateDeath() {
+let countdownInterval;
+
+function calculateDeathDate() {
   const birthInput = document.getElementById("birthdate").value;
+  const resultDiv = document.getElementById("result");
+  const countdownDiv = document.getElementById("countdown");
+
   if (!birthInput) {
-    document.getElementById("result").innerText = "⚠️ Veuillez entrer une date.";
+    resultDiv.innerHTML = "⚠️ Veuillez entrer une date valide.";
+    countdownDiv.innerHTML = "";
     return;
   }
 
+  // Effacer countdown teo aloha raha nisy
+  clearInterval(countdownInterval);
+
+  // Convertir la date de naissance
   const birthDate = new Date(birthInput);
 
-  // Génération aléatoire entre +30 ans et +100 ans
-  const randomYears = Math.floor(Math.random() * (100 - 30 + 1)) + 30;
+  // 51 ans après
   const deathDate = new Date(birthDate);
-  deathDate.setFullYear(deathDate.getFullYear() + randomYears);
+  deathDate.setFullYear(deathDate.getFullYear() + 51);
 
-  // Formatage joli en français
-  const options = { year: 'numeric', month: 'long', day: 'numeric' };
-  const deathString = deathDate.toLocaleDateString('fr-FR', options);
+  // Formatage JJ/MM/AAAA
+  const day = String(deathDate.getDate()).padStart(2, '0');
+  const month = String(deathDate.getMonth() + 1).padStart(2, '0');
+  const year = deathDate.getFullYear();
 
-  document.getElementById("result").innerText =
-    "💀 Vous êtes mort le : " + deathString;
+  resultDiv.innerHTML = `☠️ Vous êtes mort le : <span style="color:#ff5555">${day}/${month}/${year}</span>`;
+
+  // Mampandeha ny compte à rebours
+  function updateCountdown() {
+    const now = new Date().getTime();
+    const distance = deathDate.getTime() - now;
+
+    if (distance <= 0) {
+      clearInterval(countdownInterval);
+      countdownDiv.innerHTML = "💀 Votre temps est écoulé !";
+      return;
+    }
+
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+    countdownDiv.innerHTML = `⏳ Temps restant : ${days}j ${hours}h ${minutes}m ${seconds}s`;
+  }
+
+  updateCountdown();
+  countdownInterval = setInterval(updateCountdown, 1000);
 }
