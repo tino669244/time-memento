@@ -1,63 +1,35 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>RuineTime Off — Memento (démoniaque)</title>
-
-  <!-- Google Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;600;800&family=Inter:wght@300;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RuineTime Off - Memento Mori</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="bg-anim"></div>
+  <div class="overlay"></div>
+  <div class="container">
+    <!-- Poster -->
+    <div class="poster">
+      <img src="poster.png" alt="Ruine Boy Poster">
+    </div>
 
-  <main class="app">
-    <header class="header">
-      <div class="logo">RuineBoy<br><span class="small">RuineTime Off</span></div>
-      <div class="tag">MEMENTO — le présent est ton jugement</div>
-    </header>
+    <!-- Titre -->
+    <h1>☠️ RuineTime Off</h1>
+    <p class="subtitle">Entrez votre date de naissance pour voir le temps déjà vécu</p>
 
-    <section class="panel input-panel">
-      <label for="birthdate" class="label">Date de naissance</label>
-      <input id="birthdate" type="date" aria-label="Date de naissance" />
-      <div class="hint">Entrez votre date — le compteur se lance immédiatement.</div>
-    </section>
+    <!-- Input -->
+    <input type="date" id="birthdate">
 
-    <section id="result" class="panel result-panel" aria-hidden="true">
-      <div class="left">
-        <div class="box lived-box">
-          <h3>⏳ Temps déjà vécu</h3>
-          <div id="lived" class="big-number">—</div>
-          <div id="lived-breakdown" class="small">—</div>
-        </div>
-      </div>
+    <!-- Résultats -->
+    <div class="result" id="result" style="display:none;">
+      <h2>⏳ Temps déjà vécu</h2>
+      <p id="lived"></p>
 
-      <div class="right">
-        <div class="box death-box">
-          <h3 class="danger">💀 Si vous mouriez maintenant</h3>
-          <div id="death" class="death-time">—</div>
-          <div id="death-ms" class="small ms">—</div>
-        </div>
-
-        <div class="box meta-box">
-          <div class="meta-left">
-            <div class="meta-title">Âge exact</div>
-            <div id="ageExact" class="meta-value">—</div>
-          </div>
-          <div class="meta-right">
-            <div class="meta-title">Secondes totales</div>
-            <div id="secondsTotal" class="meta-value">—</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <footer class="footer">
-      <small>Ce compteur n'est pas une prédiction — il montre l'instant présent. Chaque milliseconde compte.</small>
-    </footer>
-  </main>
-
+      <h2 class="highlight">💀 Vous êtes mort le :</h2>
+      <p id="death"></p>
+    </div>
+  </div>
   <script src="script.js"></script>
 </body>
 </html>
