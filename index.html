@@ -3,31 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RuineTime Off - Memento Mori</title>
+  <title>Memento Time</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="overlay"></div>
-  <div class="container">
-    <!-- Poster -->
-    <div class="poster">
-      <img src="poster.png" alt="Ruine Boy Poster">
-    </div>
-
-    <!-- Titre -->
-    <h1>☠️ RuineTime Off</h1>
-    <p class="subtitle">Entrez votre date de naissance pour voir le temps déjà vécu</p>
-
-    <!-- Input -->
-    <input type="date" id="birthdate">
-
-    <!-- Résultats -->
-    <div class="result" id="result" style="display:none;">
-      <h2>⏳ Temps déjà vécu</h2>
-      <p id="lived"></p>
-
-      <h2 class="highlight">💀 Vous êtes mort le :</h2>
-      <p id="death"></p>
+  <div class="overlay">
+    <div class="container">
+      <h1>MEMENTO TIME</h1>
+      <p>Entrez votre date de naissance :</p>
+      <input type="date" id="birthdate">
+      <br>
+      <button onclick="calculateDeath()">Voir votre date de mort</button>
+      <div class="result" id="result"></div>
     </div>
   </div>
   <script src="script.js"></script>
