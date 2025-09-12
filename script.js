@@ -1,32 +1,21 @@
-const birthdateInput = document.getElementById("birthdate");
-const result = document.getElementById("result");
-const lived = document.getElementById("lived");
-const death = document.getElementById("death");
+function calculateDeath() {
+  const birthInput = document.getElementById("birthdate").value;
+  if (!birthInput) {
+    document.getElementById("result").innerText = "⚠️ Veuillez entrer une date.";
+    return;
+  }
 
-function updateTime() {
-  const birthdate = new Date(birthdateInput.value);
-  if (isNaN(birthdate)) return;
+  const birthDate = new Date(birthInput);
 
-  const now = new Date();
-  const diff = now - birthdate;
+  // Génération aléatoire entre +30 ans et +100 ans
+  const randomYears = Math.floor(Math.random() * (100 - 30 + 1)) + 30;
+  const deathDate = new Date(birthDate);
+  deathDate.setFullYear(deathDate.getFullYear() + randomYears);
 
-  if (diff <= 0) return;
+  // Formatage joli en français
+  const options = { year: 'numeric', month: 'long', day: 'numeric' };
+  const deathString = deathDate.toLocaleDateString('fr-FR', options);
 
-  // Calcul du temps vécu
-  const seconds = Math.floor(diff / 1000);
-  const minutes = Math.floor(seconds / 60);
-  const hours = Math.floor(minutes / 60);
-  const days = Math.floor(hours / 24);
-  const years = (days / 365.25).toFixed(8);
-
-  lived.innerHTML = `${years} ans (${days} jours, ${hours} heures, ${minutes} minutes, ${seconds} secondes)`;
-
-  // Date et heure du "décès" = maintenant
-  death.innerHTML = now.toLocaleString();
-
-  result.style.display = "block";
+  document.getElementById("result").innerText =
+    "💀 Vous êtes mort le : " + deathString;
 }
-
-birthdateInput.addEventListener("input", () => {
-  setInterval(updateTime, 1000);
-});
