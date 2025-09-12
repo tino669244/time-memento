@@ -1,27 +1,30 @@
-// script.js - RuineTime Off (no life expectancy)
-// Shows time already lived and "if you died now" timestamp.
-// Safe, minimal, updates every second.
+// RuineTime Off - "démoniaque" edition
+// Affiche temps vécu en temps réel (avec millisecondes) et "Si vous mouriez maintenant" = heure actuelle précise.
 
+// Elements
 const birthInput = document.getElementById('birthdate');
-const resultBox = document.getElementById('result');
+const resultSection = document.getElementById('result');
 const livedEl = document.getElementById('lived');
 const livedBreak = document.getElementById('lived-breakdown');
 const deathEl = document.getElementById('death');
-const deathSub = document.getElementById('death-sub');
+const deathMs = document.getElementById('death-ms');
+const ageExact = document.getElementById('ageExact');
+const secondsTotal = document.getElementById('secondsTotal');
 
-let timer = null;
 let birthday = null;
+let tick = null;
 
-function parseDateValue(val){
-  // Accepts yyyy-mm-dd from input
+function parseDate(val){
   if(!val) return null;
   const d = new Date(val + 'T00:00:00');
   return isNaN(d.getTime()) ? null : d;
 }
 
-function formatDuration(ms){
+function pad(n, len=2){ return String(n).padStart(len,'0'); }
+
+function formatDurationDetailed(ms){
   if(ms < 0) ms = Math.abs(ms);
-  let s = Math.floor(ms / 1000);
+  let s = Math.floor(ms/1000);
   const years = Math.floor(s / (3600*24*365));
   s -= years * 3600*24*365;
   const days = Math.floor(s / (3600*24));
@@ -30,61 +33,70 @@ function formatDuration(ms){
   s -= hours * 3600;
   const minutes = Math.floor(s / 60);
   const seconds = s - minutes*60;
+  const totalSeconds = Math.floor(ms/1000);
 
-  // years with decimals for more human-readable precision
+  // precise years with decimals
   const yearsDecimal = (ms / (1000 * 3600 * 24 * 365)).toFixed(8);
 
-  const display = `${yearsDecimal} ans`;
-  const breakdown = `${days} jours, ${hours} heures, ${minutes} minutes, ${seconds} secondes`;
-  return { display, breakdown, secondsTotal: Math.floor(ms/1000) };
+  const human = `${yearsDecimal} ans`;
+  const breakdown = `${days} jours, ${pad(hours)}h ${pad(minutes)}m ${pad(seconds)}s`;
+  return { human, breakdown, totalSeconds };
 }
 
 function updateNow(){
   if(!birthday) return;
+
   const now = new Date();
   const livedMs = now - birthday;
-  if(livedMs < 0) {
-    // birth date in the future
-    livedEl.textContent = 'Date de naissance invalide (futur)';
+  if(livedMs < 0){
+    // future date entered
+    livedEl.textContent = 'Date invalide (futur)';
     livedBreak.textContent = '';
     deathEl.textContent = '—';
-    deathSub.textContent = '';
+    deathMs.textContent = '';
+    resultSection.setAttribute('aria-hidden','true');
     return;
   }
 
-  const fmt = formatDuration(livedMs);
-  livedEl.textContent = fmt.display;
+  const fmt = formatDurationDetailed(livedMs);
+  livedEl.textContent = fmt.human;
   livedBreak.textContent = fmt.breakdown;
 
-  // "If you died now" simply shows the current timestamp & repeat summary
-  deathEl.textContent = now.toLocaleString();
-  deathSub.textContent = `Votre âge actuel : ${fmt.display} (${fmt.secondsTotal.toLocaleString()} secondes)`;
+  // death = now (precise)
+  const iso = now.toLocaleString();
+  const msStr = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}.${String(now.getMilliseconds()).padStart(3,'0')}`;
+  deathEl.textContent = `${iso}`;
+  deathMs.textContent = `Heure précise : ${msStr}`;
 
-  resultBox.setAttribute('aria-hidden','false');
-  resultBox.style.display = 'grid';
+  ageExact.textContent = fmt.human;
+  secondsTotal.textContent = `${fmt.totalSeconds.toLocaleString()} s`;
+
+  resultSection.setAttribute('aria-hidden','false');
+  resultSection.style.display = 'grid';
 }
 
 function startTicker(){
-  if(timer) clearInterval(timer);
-  timer = setInterval(updateNow, 1000);
-  updateNow();
+  if(tick) cancelAnimationFrame(tick);
+  // Use RAF for smoother updates; update about 60fps
+  (function loop(){
+    updateNow();
+    tick = requestAnimationFrame(loop);
+  })();
 }
 
 birthInput.addEventListener('input', (e) => {
-  const val = e.target.value;
-  const d = parseDateValue(val);
+  const d = parseDate(e.target.value);
   birthday = d;
   if(!d){
-    // hide results if invalid
-    resultBox.style.display = 'none';
-    if(timer){ clearInterval(timer); timer = null; }
+    resultSection.style.display = 'none';
+    if(tick) cancelAnimationFrame(tick);
     return;
   }
   startTicker();
 });
 
-// preload example value (optional) - remove if you don't want default
-(function preloadSample(){
+// optional preload (25y) - comment or remove if undesired
+(function preload(){
   const now = new Date();
   const yyyy = now.getFullYear(), mm = String(now.getMonth()+1).padStart(2,'0'), dd = String(now.getDate()).padStart(2,'0');
   birthInput.value = `${yyyy-25}-${mm}-${dd}`;
