@@ -1,115 +1,92 @@
-/* Style global */
-body {
-  margin: 0;
+/* Style global + background (mettez poster.jpg dans le dossier si vous l'utilisez) */
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: url("poster.jpg") no-repeat center center fixed; /* 👉 Asio sary eto */
-  background-size: cover;
-  color: #f5f5f5;
-  text-align: center;
-  position: relative;
-  min-height: 100vh;
+  background: url('poster.jpg') center center/cover no-repeat fixed;
+  color:#f5f5f5;
+  text-align:center;
+  position:relative;
+  min-height:100vh;
+}
+/* sombre overlay */
+body::before{
+  content:''; position:fixed; inset:0; z-index:0;
+  background:linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.7));
 }
 
-/* Overlay sombre mystique */
-body::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.7); /* manaloka kely ny sary */
-  z-index: 0;
+/* App */
+.app{ position:relative; z-index:1; max-width:980px; margin:40px auto; padding:28px; border-radius:12px; background:rgba(0,0,0,0.35); box-shadow:0 20px 60px rgba(0,0,0,0.7) }
+
+/* header */
+header h1{ font-size:2.2rem; color:#ff5252; text-shadow:0 6px 20px rgba(255,82,82,0.08) }
+header p{ color:#d3d3d3; margin-bottom:14px }
+
+/* input */
+.input-section{ margin:16px 0; display:flex; gap:8px; justify-content:center; align-items:center; flex-wrap:wrap }
+.input-section input{ padding:10px 12px; border-radius:8px; border:none; background:rgba(255,255,255,0.03); color:#fff }
+.input-section button{ padding:10px 14px; border-radius:8px; border:none; background:#ff5252; color:#111; font-weight:700; cursor:pointer }
+
+/* result date */
+.result{ margin:18px 0; font-size:1.1rem; color:#ffd86b; font-weight:700 }
+
+/* cards */
+.countdown-cards{ display:flex; justify-content:center; gap:18px; margin-top:20px; flex-wrap:wrap }
+.card{
+  background: rgba(15,15,15,0.85);
+  width:150px;
+  padding:18px;
+  border-radius:12px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.6), 0 0 18px rgba(255,0,0,0.06) inset;
+  transition:transform .15s ease;
+}
+.card:hover{ transform:translateY(-6px) }
+.card h2{ font-size:1rem; color:#ff6b6b; margin-bottom:8px }
+.card p{ font-size:2.2rem; margin:0; color:#fff; text-shadow:0 6px 20px rgba(255,0,0,0.06) }
+.subinfo{ margin-top:8px; font-size:0.9rem; color:#cfcfcf; opacity:0.9 }
+
+/* fast tick (tierce) animation - a small fast dot running left->right in loop */
+.fast-tick-wrap{
+  margin:22px auto 8px;
+  width:80%;
+  max-width:700px;
+  height:6px;
+  background:rgba(255,255,255,0.04);
+  border-radius:6px;
+  position:relative;
+  overflow:hidden;
+}
+.fast-tick{
+  position:absolute;
+  top:50%;
+  left:-6%;
+  transform:translateY(-50%);
+  width:18px;
+  height:18px;
+  background:linear-gradient(90deg,#ff8a00,#ff2e3b);
+  border-radius:50%;
+  box-shadow:0 8px 20px rgba(255,46,59,0.3);
+  animation: fastRun 0.9s linear infinite;
+}
+@keyframes fastRun{
+  0%{ left:-6%; transform:translateY(-50%) scale(0.9) }
+  50%{ transform:translateY(-50%) scale(1.05) }
+  100%{ left:106%; transform:translateY(-50%) scale(0.9) }
 }
 
-.app {
-  position: relative;
-  z-index: 1; /* miakatra ambonin’ny overlay */
-  padding: 20px;
-}
+/* progress bar */
+.progress-wrap{ margin:18px auto; max-width:720px; display:flex; gap:12px; align-items:center; justify-content:center }
+.progress-container{ flex:1; height:14px; background:#222; border-radius:12px; overflow:hidden }
+.progress-bar{ height:100%; width:100%; background:linear-gradient(90deg,#28ff9b,#ff5252); transition:width 1s linear }
+.percent-label{ min-width:64px; text-align:center; font-weight:700; color:#fff }
 
-/* Titre */
-header h1 {
-  font-size: 2.5rem;
-  margin: 20px 0;
-  color: #ff0033;
-  text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0033;
-}
+/* footer */
+.app-footer{ margin-top:20px; color:#bbb }
 
-header p {
-  font-size: 1.2rem;
-  color: #cccccc;
-}
-
-/* Input Section */
-.input-section {
-  margin: 20px;
-}
-
-.input-section input,
-.input-section button {
-  padding: 10px;
-  margin: 5px;
-  border-radius: 8px;
-  border: none;
-  font-size: 1rem;
-}
-
-.input-section input {
-  background: #222;
-  color: #fff;
-}
-
-.input-section button {
-  background: #ff0033;
-  color: #fff;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.input-section button:hover {
-  background: #cc0029;
-}
-
-/* Résultat */
-.result {
-  margin: 20px 0;
-  font-size: 1.3rem;
-  font-weight: bold;
-  color: #ffcc00;
-  text-shadow: 0 0 10px #ffcc00;
-}
-
-/* Countdown Cards */
-.countdown-cards {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  margin-top: 30px;
-}
-
-.card {
-  background: rgba(30, 30, 30, 0.85);
-  padding: 20px;
-  border-radius: 15px;
-  width: 120px;
-  box-shadow: 0 0 15px rgba(255, 0, 0, 0.6), inset 0 0 10px rgba(255, 255, 255, 0.1);
-  transition: transform 0.2s;
-}
-
-.card:hover {
-  transform: scale(1.1);
-}
-
-.card h2 {
-  font-size: 1.2rem;
-  margin-bottom: 10px;
-  color: #ff0033;
-}
-
-.card p {
-  font-size: 2rem;
-  margin: 0;
-  color: #ffffff;
-  text-shadow: 0 0 10px #ff0033;
+/* responsive */
+@media (max-width:700px){
+  .countdown-cards{ gap:12px }
+  .card{ width:110px; padding:12px }
+  .card p{ font-size:1.6rem }
+  .fast-tick-wrap{ width:92% }
 }
