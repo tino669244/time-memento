@@ -1,64 +1,44 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>RuineTime Off — Memento</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RuineTime Off - Chronomètre de Vie</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <!-- Background poster -->
-  <div class="bg" aria-hidden="true"></div>
-
-  <!-- Full-screen launcher / splash -->
-  <div id="launcher" class="launcher">
-    <div class="launcher-inner">
-      <img class="launcher-poster" src="poster.png" alt="RuineBoy poster">
-      <h1 class="launcher-title">RuineBoy — RuineTime Off</h1>
-      <p class="launcher-sub">"Chaque seconde compte"</p>
-
-      <div class="launcher-clock" id="launcherClock">00:00:00</div>
-
-      <button id="enterBtn" class="enter-btn">Entrer dans l'app</button>
-      <p class="hint">Tap / Click to open — version démoniaque</p>
-    </div>
-  </div>
-
-  <!-- Main App Container (hidden until launcher closed) -->
-  <main id="app" class="app" aria-hidden="true">
-    <header class="app-header">
-      <div class="logo">💀 RuineTime Off</div>
-      <div class="live-clock" id="liveClock">00:00:00</div>
+  <div class="app">
+    <header>
+      <h1>💀 RuineTime Off 💀</h1>
+      <p>Entrez votre date de naissance pour découvrir votre <strong>date fatale</strong>.</p>
     </header>
 
-    <section class="content">
-      <div class="hero">
-        <h2>Chronomètre de vie</h2>
-        <p class="subtitle">Entrez votre date de naissance pour voir le temps déjà vécu et la date prédite.</p>
+    <!-- Input naissance -->
+    <div class="input-section">
+      <label for="birthdate">📅 Date de naissance :</label>
+      <input type="date" id="birthdate">
+      <button onclick="calculateDeathDate()">Voir ma date de mort</button>
+    </div>
 
-        <div class="controls">
-          <input type="date" id="birthdate" aria-label="Date de naissance">
-          <button id="calcBtn">Voir ma date de mort</button>
-        </div>
+    <!-- Résultat (date de mort prédite) -->
+    <div class="result" id="result"></div>
 
-        <div class="outputs">
-          <div id="result" class="result">—</div>
-          <div id="countdown" class="countdown">—</div>
-
-          <div class="progress-wrap">
-            <div class="progress-container">
-              <div id="progressBar" class="progress-bar"></div>
-            </div>
-            <div id="percentLabel" class="percent-label">100%</div>
-          </div>
-        </div>
+    <!-- Séparations des compteurs -->
+    <div class="countdown-cards" id="countdown">
+      <div class="card">
+        <h2>🕒 Heures</h2>
+        <p id="hours">0</p>
       </div>
-    </section>
-
-    <footer class="app-footer">
-      <small>Ce compteur n'est pas une prédiction : simple memento.</small>
-    </footer>
-  </main>
+      <div class="card">
+        <h2>⏱️ Minutes</h2>
+        <p id="minutes">0</p>
+      </div>
+      <div class="card">
+        <h2>⏳ Secondes</h2>
+        <p id="seconds">0</p>
+      </div>
+    </div>
+  </div>
 
   <script src="script.js"></script>
 </body>
