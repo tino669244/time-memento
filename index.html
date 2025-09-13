@@ -1,63 +1,49 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>RuineTime Off — Chronomètre de Vie</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RuineTime Off - Chronomètre de Vie</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="app">
     <header>
       <h1>💀 RuineTime Off 💀</h1>
-      <p>Entrez votre date de naissance pour découvrir votre <strong>date fatale</strong>.</p>
+      <p>Entrez votre date de naissance et découvrez votre date de mort prédite.</p>
     </header>
 
-    <!-- Input naissance -->
     <div class="input-section">
       <label for="birthdate">📅 Date de naissance :</label>
       <input type="date" id="birthdate">
-      <button id="calcBtn">Voir ma date de mort</button>
+      <button onclick="calculateDeathDate()">Voir ma date de mort</button>
     </div>
 
-    <!-- Résultat (date de mort prédite) -->
-    <div class="result" id="result">—</div>
+    <div class="result" id="result"></div>
 
-    <!-- Séparations des compteurs -->
-    <div class="countdown-cards" id="countdown">
-      <div class="card">
-        <h2>🕒 Heures</h2>
-        <p id="hours">0</p>
-        <div class="subinfo" id="hours-days">≈ 0 j</div>
+    <!-- Compteur principal -->
+    <div class="time-grid">
+      <div class="time-unit">
+        <div class="time-value" id="days">0</div>
+        <div class="time-label">Jours</div>
       </div>
-      <div class="card">
-        <h2>⏱️ Minutes</h2>
-        <p id="minutes">0</p>
-        <div class="subinfo" id="minutes-hours">≈ 0 h</div>
+      <div class="time-unit">
+        <div class="time-value" id="hours">0</div>
+        <div class="time-label">Heures</div>
       </div>
-      <div class="card">
-        <h2>⏳ Secondes</h2>
-        <p id="seconds">0</p>
-        <div class="subinfo" id="seconds-minutes">≈ 0 m</div>
+      <div class="time-unit">
+        <div class="time-value" id="minutes">0</div>
+        <div class="time-label">Minutes</div>
+      </div>
+      <div class="time-unit">
+        <div class="time-value" id="seconds">0</div>
+        <div class="time-label">Secondes</div>
+      </div>
+      <div class="time-unit">
+        <div class="time-value fast-tick" id="tierces">0</div>
+        <div class="time-label">Tierces</div>
       </div>
     </div>
-
-    <!-- fast tick animation (tierce) -->
-    <div class="fast-tick-wrap">
-      <div class="fast-tick"></div>
-    </div>
-
-    <!-- progress bar (optionnel) -->
-    <div class="progress-wrap">
-      <div class="progress-container">
-        <div id="progressBar" class="progress-bar"></div>
-      </div>
-      <div id="percentLabel" class="percent-label">100%</div>
-    </div>
-
-    <footer class="app-footer">
-      <small>Ce compteur n'est pas une prédiction : simple memento.</small>
-    </footer>
   </div>
 
   <script src="script.js"></script>
