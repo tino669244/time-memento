@@ -1,42 +1,64 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RuineTime Off - Chronomètre de Vie</title>
-  <link rel="stylesheet" href="styles.css">
-
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-BH8BRD3XEE"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-BH8BRD3XEE');
-  </script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RuineTime Off — Memento</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="app">
-    <header>
-      <h1>💀 RuineTime Off 💀</h1>
-      <p>Entrez votre date de naissance et découvrez votre date de mort prédite.</p>
-    </header>
+  <!-- Background poster -->
+  <div class="bg" aria-hidden="true"></div>
 
-    <div class="input-section">
-      <label for="birthdate">📅 Date de naissance :</label>
-      <input type="date" id="birthdate">
-      <button onclick="calculateDeathDate()">Voir ma date de mort</button>
-    </div>
+  <!-- Full-screen launcher / splash -->
+  <div id="launcher" class="launcher">
+    <div class="launcher-inner">
+      <img class="launcher-poster" src="poster.png" alt="RuineBoy poster">
+      <h1 class="launcher-title">RuineBoy — RuineTime Off</h1>
+      <p class="launcher-sub">"Chaque seconde compte"</p>
 
-    <div class="result" id="result"></div>
-    <div class="countdown" id="countdown"></div>
+      <div class="launcher-clock" id="launcherClock">00:00:00</div>
 
-    <!-- Progress bar -->
-    <div class="progress-container">
-      <div class="progress-bar" id="progress-bar"></div>
+      <button id="enterBtn" class="enter-btn">Entrer dans l'app</button>
+      <p class="hint">Tap / Click to open — version démoniaque</p>
     </div>
   </div>
+
+  <!-- Main App Container (hidden until launcher closed) -->
+  <main id="app" class="app" aria-hidden="true">
+    <header class="app-header">
+      <div class="logo">💀 RuineTime Off</div>
+      <div class="live-clock" id="liveClock">00:00:00</div>
+    </header>
+
+    <section class="content">
+      <div class="hero">
+        <h2>Chronomètre de vie</h2>
+        <p class="subtitle">Entrez votre date de naissance pour voir le temps déjà vécu et la date prédite.</p>
+
+        <div class="controls">
+          <input type="date" id="birthdate" aria-label="Date de naissance">
+          <button id="calcBtn">Voir ma date de mort</button>
+        </div>
+
+        <div class="outputs">
+          <div id="result" class="result">—</div>
+          <div id="countdown" class="countdown">—</div>
+
+          <div class="progress-wrap">
+            <div class="progress-container">
+              <div id="progressBar" class="progress-bar"></div>
+            </div>
+            <div id="percentLabel" class="percent-label">100%</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="app-footer">
+      <small>Ce compteur n'est pas une prédiction : simple memento.</small>
+    </footer>
+  </main>
 
   <script src="script.js"></script>
 </body>
