@@ -1,85 +1,100 @@
-body {
-  margin: 0;
-  font-family: 'Inter', sans-serif;
-  background: url('poster.png') no-repeat center center fixed;
-  background-size: cover;
-  color: #f5f5f5;
-  text-align: center;
+/* Basic reset */
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+
+/* Background poster (cover) */
+.bg{
+  position:fixed; inset:0;
+  background: url('poster.png') center center / cover no-repeat;
+  filter: saturate(0.6) brightness(0.45);
+  z-index:0;
 }
 
-.app {
-  background: rgba(0, 0, 0, 0.7);
-  padding: 40px;
-  margin: 50px auto;
-  width: 80%;
-  max-width: 600px;
-  border-radius: 12px;
+/* App container (hidden initially) */
+.app{
+  position:relative;
+  z-index:5;
+  max-width:960px;
+  margin:40px auto;
+  background: linear-gradient(180deg, rgba(0,0,0,0.55), rgba(0,0,0,0.6));
+  border-radius:16px;
+  color:#eee;
+  padding:28px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.7);
 }
 
-header h1 {
-  font-size: 2.2em;
-  margin-bottom: 10px;
-  color: #ff5555;
+/* Header */
+.app-header{
+  display:flex; justify-content:space-between; align-items:center; gap:12px;
+  margin-bottom:18px;
+}
+.logo{ font-size:20px; font-weight:800; color:#ff5252; text-shadow:0 6px 20px rgba(255,82,82,0.08) }
+.live-clock{ font-family: monospace; color:#ffd86b; font-weight:700 }
+
+/* Hero / Controls */
+.hero{ text-align:center }
+.hero h2{ font-size:24px; color:#fff; margin-bottom:6px }
+.subtitle{ color: #cfcfcf; margin-bottom:18px }
+
+.controls{ display:flex; gap:12px; justify-content:center; margin-bottom:18px; flex-wrap:wrap }
+.controls input[type="date"]{
+  padding:10px 12px; border-radius:8px; border:none; outline:none; min-width:190px;
+  background: rgba(255,255,255,0.03); color:#fff;
+}
+.controls button{
+  padding:10px 14px; border-radius:8px; border:none; background: #ff5252; color:#111; font-weight:700; cursor:pointer;
+  box-shadow:0 6px 24px rgba(255,82,82,0.12);
 }
 
-header p {
-  font-size: 1.1em;
-  color: #ddd;
+/* Outputs */
+.outputs{ margin-top:12px; display:flex; flex-direction:column; gap:12px; align-items:center }
+.result{ font-size:20px; color:#aef0c4; font-weight:700 }
+.countdown{ color:#ffd86b; font-weight:700 }
+
+.progress-wrap{ width:100%; max-width:720px; display:flex; gap:12px; align-items:center; justify-content:center; margin-top:8px }
+.progress-container{ flex:1; height:18px; background:#222; border-radius:12px; overflow:hidden; border:1px solid rgba(255,255,255,0.02) }
+.progress-bar{ height:100%; width:100%; background: linear-gradient(90deg, #28ff9b, #ff5252); transition: width 1s linear }
+
+.percent-label{ min-width:64px; text-align:center; color:#fff; font-weight:700 }
+
+/* Footer */
+.app-footer{ margin-top:18px; text-align:center; color:#bfc6cc }
+
+/* LAUNCHER / SPLASH */
+.launcher{
+  position:fixed; inset:0; z-index:10;
+  display:flex; align-items:center; justify-content:center;
+  background:linear-gradient(180deg, rgba(0,0,0,0.6), rgba(10,0,0,0.7));
+  backdrop-filter: blur(6px);
+}
+.launcher-inner{
+  text-align:center; color:#fff; max-width:760px; padding:28px; border-radius:14px;
+  background: linear-gradient(180deg, rgba(10,3,3,0.25), rgba(10,3,3,0.15));
+  border:1px solid rgba(255,82,82,0.06);
+  box-shadow: 0 18px 60px rgba(0,0,0,0.7);
+}
+.launcher-poster{ width:210px; height:auto; border-radius:10px; margin-bottom:14px; box-shadow:0 12px 40px rgba(0,0,0,0.6) }
+.launcher-title{ font-size:28px; color:#ff6b6b; margin-bottom:6px; font-weight:800 }
+.launcher-sub{ color:#d0c6c6; margin-bottom:12px }
+
+.launcher-clock{
+  font-family: monospace; font-size:28px; color:#ffd86b; margin-bottom:18px; font-weight:700;
+  text-shadow: 0 8px 30px rgba(255,216,107,0.08);
 }
 
-.input-section {
-  margin: 20px 0;
+.enter-btn{
+  padding:12px 18px; border-radius:10px; border:none; background:#ff5252; color:#111; font-weight:800; cursor:pointer;
+  box-shadow:0 12px 40px rgba(255,82,82,0.14); font-size:16px;
 }
+.enter-btn:hover{ transform:translateY(-3px); transition:0.18s }
 
-input[type="date"] {
-  padding: 10px;
-  font-size: 1em;
-  border-radius: 6px;
-  border: none;
-  margin-right: 10px;
-}
+/* hint */
+.hint{ margin-top:10px; font-size:12px; color:#cfcfcf }
 
-button {
-  padding: 10px 20px;
-  font-size: 1em;
-  background: #ff5555;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  color: #fff;
-  transition: 0.3s;
-}
-
-button:hover {
-  background: #cc0000;
-}
-
-.result {
-  margin-top: 30px;
-  font-size: 1.4em;
-  font-weight: bold;
-  color: #00ff99;
-}
-
-.countdown {
-  margin-top: 20px;
-  font-size: 1.2em;
-  color: #ffd700;
-}
-
-/* Progress bar */
-.progress-container {
-  margin-top: 30px;
-  width: 100%;
-  height: 25px;
-  background: #333;
-  border-radius: 15px;
-  overflow: hidden;
-}
-
-.progress-bar {
-  height: 100%;
-  width: 100%;
-  background: linear-gradient(to right, #00ff99, #ff0000);
-  transition: width 1s linear;
+/* small screens */
+@media (max-width:720px){
+  .launcher-inner{ padding:16px }
+  .launcher-poster{ width:160px }
+  .launcher-title{ font-size:22px }
+  .app{ margin:16px; padding:18px }
 }
