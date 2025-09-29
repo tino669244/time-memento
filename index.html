@@ -1,39 +1,70 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RuineTime Off - Chronomètre de Vie</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RuineTime Off — Memento Unique</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <!-- Canvas graffiti background -->
   <canvas id="graffitiCanvas"></canvas>
-  <div class="overlay"></div>
 
-  <div class="app">
-    <header>
-      <h1>💀 RuineTime Off 💀</h1>
-      <p>Entrez votre date de naissance et découvrez le compte à rebours jusqu'à votre fin.</p>
+  <!-- rouge overlay -->
+  <div class="overlay" aria-hidden="true"></div>
+
+  <!-- App -->
+  <main class="app" role="main">
+    <header class="header">
+      <h1>💀 RuineTime Off</h1>
+      <p class="subtitle">Entrez votre date de naissance — votre "fin" unique sera révélée.</p>
     </header>
 
-    <div class="input-section">
-      <label for="birthdate">📅 Date de naissance :</label>
-      <input type="date" id="birthdate">
-      <button onclick="calculateDeathDate()">Voir ma date de mort</button>
-    </div>
+    <section class="controls">
+      <label for="birthdate">📅 Date de naissance</label>
+      <input id="birthdate" type="date" aria-label="Date de naissance">
+      <button id="goBtn">Révéler ma date</button>
+      <button id="randomBtn" title="Générer depuis maintenant">Random seed</button>
+    </section>
 
-    <div class="result" id="result"></div>
+    <section class="result-area">
+      <div id="result" class="result">Aucune date prédite</div>
 
-    <!-- Countdown -->
-    <div class="countdown-container" id="countdown">
-      <div class="time-box"><span id="days">0</span><p>Jours</p></div>
-      <div class="time-box"><span id="hours">0</span><p>Heures</p></div>
-      <div class="time-box"><span id="minutes">0</span><p>Minutes</p></div>
-      <div class="time-box"><span id="seconds">0</span><p>Secondes</p></div>
-      <div class="time-box"><span id="tierces">0</span><p>Tierces</p></div>
-    </div>
-  </div>
+      <div id="countdown" class="countdown">
+        <div class="time-unit">
+          <div class="value" id="days">0</div>
+          <div class="label">Jours</div>
+        </div>
+        <div class="time-unit">
+          <div class="value" id="hours">0</div>
+          <div class="label">Heures</div>
+        </div>
+        <div class="time-unit">
+          <div class="value" id="minutes">0</div>
+          <div class="label">Minutes</div>
+        </div>
+        <div class="time-unit">
+          <div class="value" id="seconds">0</div>
+          <div class="label">Secondes</div>
+        </div>
+        <div class="time-unit tierce">
+          <div class="value flashy" id="tierces">0</div>
+          <div class="label">Tierces</div>
+        </div>
+      </div>
+
+      <div class="progress-row">
+        <div class="progress-bar-bg">
+          <div id="progressFill" class="progress-fill"></div>
+        </div>
+        <div id="progressPct" class="progress-pct">100%</div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <small>Ces prédictions sont générées algorithmiquement — memento mori.</small>
+    </footer>
+  </main>
 
   <script src="script.js"></script>
 </body>
