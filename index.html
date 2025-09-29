@@ -4,48 +4,85 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>RuineTime Off - Chronomètre de Vie</title>
-  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background: url('dark-bg.jpg') no-repeat center center/cover;
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+    }
+    .countdown {
+      font-size: 2rem;
+      margin-top: 20px;
+    }
+    .time-box {
+      display: inline-block;
+      margin: 10px;
+      padding: 15px;
+      background: rgba(0,0,0,0.7);
+      border-radius: 10px;
+      min-width: 100px;
+    }
+    h1 { text-shadow: 0 0 10px red; }
+  </style>
 </head>
 <body>
-  <div class="app">
-    <header>
-      <h1>💀 RuineTime Off 💀</h1>
-      <p>Entrez votre date de naissance et découvrez votre date de mort prédite.</p>
-    </header>
+  <h1>💀 RuineTime Off 💀</h1>
+  <p>Entrez votre date de naissance et découvrez votre date de mort prédite aléatoire.</p>
 
-    <div class="input-section">
-      <label for="birthdate">📅 Date de naissance :</label>
-      <input type="date" id="birthdate">
-      <button onclick="calculateDeathDate()">Voir ma date de mort</button>
-    </div>
+  <input type="date" id="birthdate">
+  <button onclick="calculateDeathDate()">Voir ma date de mort</button>
 
-    <div class="result" id="result"></div>
+  <div id="result"></div>
+  <div class="countdown" id="countdown"></div>
 
-    <!-- Compteur principal -->
-    <div class="time-grid">
-      <div class="time-unit">
-        <div class="time-value" id="days">0</div>
-        <div class="time-label">Jours</div>
-      </div>
-      <div class="time-unit">
-        <div class="time-value" id="hours">0</div>
-        <div class="time-label">Heures</div>
-      </div>
-      <div class="time-unit">
-        <div class="time-value" id="minutes">0</div>
-        <div class="time-label">Minutes</div>
-      </div>
-      <div class="time-unit">
-        <div class="time-value" id="seconds">0</div>
-        <div class="time-label">Secondes</div>
-      </div>
-      <div class="time-unit">
-        <div class="time-value fast-tick" id="tierces">0</div>
-        <div class="time-label">Tierces</div>
-      </div>
-    </div>
-  </div>
+  <script>
+    function calculateDeathDate() {
+      const birthdate = document.getElementById("birthdate").value;
+      if (!birthdate) {
+        alert("Veuillez entrer votre date de naissance !");
+        return;
+      }
 
-  <script src="script.js"></script>
+      // Base : date de naissance
+      const birth = new Date(birthdate);
+
+      // Lifespan aléatoire (1 à 1000 ans)
+      const lifespan = Math.floor(Math.random() * 1000) + 1;
+
+      // Date de mort
+      const deathDate = new Date(birth);
+      deathDate.setFullYear(birth.getFullYear() + lifespan);
+
+      document.getElementById("result").innerHTML =
+        `🪦 Date prédite de votre mort : <strong>${deathDate.toDateString()}</strong>`;
+
+      // Countdown dynamique
+      setInterval(() => {
+        const now = new Date().getTime();
+        const distance = deathDate - now;
+
+        if (distance < 0) {
+          document.getElementById("countdown").innerHTML = "☠️ Vous êtes mort.";
+          return;
+        }
+
+        let days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        let milliseconds = Math.floor((distance % 1000) / 10);
+
+        document.getElementById("countdown").innerHTML = `
+          <div class="time-box">Jours<br>${days}</div>
+          <div class="time-box">Heures<br>${hours}</div>
+          <div class="time-box">Minutes<br>${minutes}</div>
+          <div class="time-box">Secondes<br>${seconds}</div>
+          <div class="time-box">Tierces<br>${milliseconds}</div>
+        `;
+      }, 50);
+    }
+  </script>
 </body>
 </html>
