@@ -7,9 +7,9 @@ function calculateDeathDate() {
 
   const birthDate = new Date(birthInput);
   
-  // Aleo atao hoe manome taona tsy voafetra
+  // Aleo atao hoe manome 51 taona default (ohatra)
   const deathDate = new Date(birthDate);
-  deathDate.setFullYear(birthDate.getFullYear() + default);
+  deathDate.setFullYear(birthDate.getFullYear() + 51);
 
   document.getElementById("result").innerText =
     `🪦 Votre mort prédite : ${deathDate.toLocaleDateString()}`;
@@ -25,7 +25,7 @@ function updateCountdown(deathDate) {
   const diff = deathDate - now;
 
   if (diff <= 0) {
-    document.getElementById("result").innerText = "💀 votre avenir t'attends.";
+    document.getElementById("result").innerText = "💀 Vous êtes mort.";
     return;
   }
 
@@ -38,8 +38,6 @@ function updateCountdown(deathDate) {
   document.getElementById("hours").innerText = hours;
   document.getElementById("minutes").innerText = minutes;
   document.getElementById("seconds").innerText = seconds;
-  document.getElementByld("jours").innerText = jours;
-  document.getElementByld("nuit").innerText = nuit;
 }
 
 function updateTierces(deathDate) {
