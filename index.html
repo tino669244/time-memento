@@ -3,44 +3,35 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RuineTime Off - Countdown Mystique</title>
+  <title>RuineTime Off - Chronomètre de Vie</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <!-- Canvas graffiti background -->
+  <canvas id="graffitiCanvas"></canvas>
   <div class="overlay"></div>
+
   <div class="app">
     <header>
-      <h1 class="title">💀 RuineTime Off 💀</h1>
-      <p class="subtitle">Entrez votre date de naissance et découvrez votre compte à rebours mystique...</p>
+      <h1>💀 RuineTime Off 💀</h1>
+      <p>Entrez votre date de naissance et découvrez le compte à rebours jusqu'à votre fin.</p>
     </header>
 
     <div class="input-section">
       <label for="birthdate">📅 Date de naissance :</label>
       <input type="date" id="birthdate">
-      <button onclick="startCountdown()">Commencer</button>
+      <button onclick="calculateDeathDate()">Voir ma date de mort</button>
     </div>
 
+    <div class="result" id="result"></div>
+
+    <!-- Countdown -->
     <div class="countdown-container" id="countdown">
-      <div class="time-box">
-        <span id="days">0</span>
-        <label>Jours</label>
-      </div>
-      <div class="time-box">
-        <span id="hours">0</span>
-        <label>Heures</label>
-      </div>
-      <div class="time-box">
-        <span id="minutes">0</span>
-        <label>Minutes</label>
-      </div>
-      <div class="time-box">
-        <span id="seconds">0</span>
-        <label>Secondes</label>
-      </div>
-      <div class="time-box">
-        <span id="tierce">0</span>
-        <label>Tierces</label>
-      </div>
+      <div class="time-box"><span id="days">0</span><p>Jours</p></div>
+      <div class="time-box"><span id="hours">0</span><p>Heures</p></div>
+      <div class="time-box"><span id="minutes">0</span><p>Minutes</p></div>
+      <div class="time-box"><span id="seconds">0</span><p>Secondes</p></div>
+      <div class="time-box"><span id="tierces">0</span><p>Tierces</p></div>
     </div>
   </div>
 
