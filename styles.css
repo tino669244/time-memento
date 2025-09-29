@@ -1,59 +1,102 @@
+/* Background effet sombre et démoniaque */
 body {
   margin: 0;
-  padding: 0;
-  font-family: 'Inter', sans-serif;
-  background: radial-gradient(circle at center, #000000, #1a1a1a, #000000);
-  color: white;
+  font-family: 'JetBrains Mono', monospace;
+  background: url("https://i.ibb.co/6Y5P1sR/dark-demonic-bg.jpg") no-repeat center center fixed;
+  background-size: cover;
+  color: #fff;
+  overflow: hidden;
+}
+
+/* Overlay pour effet rouge sang */
+.overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(150, 0, 0, 0.4);
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+.app {
+  position: relative;
+  z-index: 2;
   text-align: center;
+  padding: 50px 20px;
 }
 
-header {
-  margin-top: 30px;
+/* Titre avec effet glowing */
+.title {
+  font-size: 3rem;
+  text-shadow: 0 0 15px red, 0 0 25px crimson;
+  animation: flicker 2s infinite alternate;
 }
 
+.subtitle {
+  font-size: 1.2rem;
+  color: #ffcccc;
+  margin-bottom: 30px;
+}
+
+/* Input */
 .input-section {
-  margin: 20px;
+  margin-bottom: 40px;
+}
+input, button {
+  padding: 10px;
+  margin: 5px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+}
+button {
+  background: crimson;
+  color: white;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+button:hover {
+  transform: scale(1.1);
+  background: darkred;
 }
 
-.time-grid {
+/* Countdown */
+.countdown-container {
   display: flex;
   justify-content: center;
-  margin-top: 30px;
   gap: 20px;
+  margin-top: 40px;
 }
 
-.time-unit {
-  background: rgba(255, 255, 255, 0.08);
+.time-box {
+  background: rgba(0, 0, 0, 0.6);
   padding: 20px;
-  border-radius: 15px;
-  min-width: 100px;
-  box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+  border-radius: 10px;
+  width: 100px;
+  box-shadow: 0 0 20px crimson;
+  animation: pulse 1.5s infinite;
 }
 
-.time-value {
+.time-box span {
   font-size: 2rem;
-  font-weight: bold;
+  display: block;
+  color: #ff4444;
+  text-shadow: 0 0 10px red, 0 0 20px darkred;
 }
 
-/* Tierces flashy */
-.fast-tick {
-  background: linear-gradient(90deg, #ff0000, #ff9900, #33ff00, #00ffff, #0066ff, #cc00ff, #ff0000);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: fastRun 0.2s linear infinite, colorShift 2s linear infinite;
-  text-shadow: 0 0 5px rgba(255, 0, 0, 0.7),
-               0 0 10px rgba(255, 255, 255, 0.9),
-               0 0 15px rgba(0, 255, 255, 0.8);
+.time-box label {
+  font-size: 0.9rem;
+  color: #ddd;
 }
 
-@keyframes fastRun {
-  0%   { transform: translateY(0); }
-  50%  { transform: translateY(-5px); }
-  100% { transform: translateY(0); }
+/* Animation effects */
+@keyframes flicker {
+  0% { opacity: 1; text-shadow: 0 0 10px red; }
+  50% { opacity: 0.8; text-shadow: 0 0 20px crimson; }
+  100% { opacity: 1; text-shadow: 0 0 30px darkred; }
 }
 
-@keyframes colorShift {
-  0%   { background-position: 0% 50%; }
-  50%  { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+@keyframes pulse {
+  0% { box-shadow: 0 0 10px crimson; }
+  50% { box-shadow: 0 0 25px red; }
+  100% { box-shadow: 0 0 10px crimson; }
 }
