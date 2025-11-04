@@ -1,71 +1,21 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>RuineTime Off — Memento Unique</title>
-  <link rel="stylesheet" href="styles.css" />
-</head>
 <body>
-  <!-- Canvas graffiti background -->
-  <canvas id="graffitiCanvas"></canvas>
+  <div id="mainWrapper">
+    <div id="leftPanel"></div>
+    <div id="rightPanel">
+      <canvas id="graffitiCanvas"></canvas>
 
-  <!-- rouge overlay -->
-  <div class="overlay" aria-hidden="true"></div>
+      <div id="chronoContainer">
+        <div id="chrono"></div>
+        <div id="result"></div>
+        <div id="progressBar">
+          <div id="progressFill"></div>
+        </div>
 
-  <!-- App -->
-  <main class="app" role="main">
-    <header class="header">
-      <h1>💀 RuineTime Off</h1>
-      <p class="subtitle">Entrez votre date de naissance — votre "fin" unique sera révélée.</p>
-    </header>
-
-    <section class="controls">
-      <label for="birthdate">📅 Date de naissance</label>
-      <input id="birthdate" type="date" aria-label="Date de naissance">
-      <button id="goBtn">Révéler ma date</button>
-      <button id="randomBtn" title="Générer depuis maintenant">Random seed</button>
-    </section>
-
-    <section class="result-area">
-      <div id="result" class="result">Aucune date prédite</div>
-
-      <div id="countdown" class="countdown">
-        <div class="time-unit">
-          <div class="value" id="days">0</div>
-          <div class="label">Jours</div>
-        </div>
-        <div class="time-unit">
-          <div class="value" id="hours">0</div>
-          <div class="label">Heures</div>
-        </div>
-        <div class="time-unit">
-          <div class="value" id="minutes">0</div>
-          <div class="label">Minutes</div>
-        </div>
-        <div class="time-unit">
-          <div class="value" id="seconds">0</div>
-          <div class="label">Secondes</div>
-        </div>
-        <div class="time-unit tierce">
-          <div class="value flashy" id="tierces">0</div>
-          <div class="label">Tierces</div>
-        </div>
+        <input type="date" id="birthdate">
+        <button id="goBtn">Predict</button>
+        <button id="randomBtn">Random</button>
+        <div id="progressPct"></div>
       </div>
-
-      <div class="progress-row">
-        <div class="progress-bar-bg">
-          <div id="progressFill" class="progress-fill"></div>
-        </div>
-        <div id="progressPct" class="progress-pct">100%</div>
-      </div>
-    </section>
-
-    <footer class="footer">
-      <small>Ces prédictions sont générées algorithmiquement — memento mori.</small>
-    </footer>
-  </main>
-
-  <script src="script.js"></script>
+    </div>
+  </div>
 </body>
-</html>
