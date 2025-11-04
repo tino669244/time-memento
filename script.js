@@ -1,10 +1,36 @@
-/* -----------------------------
-   Audio-reactive terror canvas
------------------------------- */
+// --------------------
+// Chrono + Navigation
+// --------------------
+const chrono = document.getElementById("chrono");
+let seconds = 0;
+setInterval(() => {
+  seconds++;
+  const h = String(Math.floor(seconds / 3600)).padStart(2, "0");
+  const m = String(Math.floor((seconds % 3600) / 60)).padStart(2, "0");
+  const s = String(seconds % 60).padStart(2, "0");
+  chrono.textContent = `${h}:${m}:${s}`;
+}, 1000);
+
+// Navigation links
+const links = document.querySelectorAll(".nav-links a");
+const pages = document.querySelectorAll(".page");
+
+links.forEach(link => {
+  link.addEventListener("click", e => {
+    e.preventDefault();
+    const target = document.querySelector(link.getAttribute("href"));
+    pages.forEach(p => p.classList.remove("active"));
+    target.classList.add("active");
+  });
+});
+
+// --------------------
+// Audio visualizer
+// --------------------
 const canvas = document.getElementById("graffitiCanvas");
 const ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth;
-canvas.height = window.innerHeight * 0.7;
+canvas.height = window.innerHeight * 0.45;
 
 const audio = document.getElementById("audio");
 const fileInput = document.getElementById("audioFile");
@@ -40,7 +66,6 @@ function setupAudio() {
   source.connect(analyser);
   analyser.connect(audioCtx.destination);
   analyser.fftSize = 256;
-
   bufferLength = analyser.frequencyBinCount;
   dataArray = new Uint8Array(bufferLength);
   animate();
@@ -57,27 +82,17 @@ function animate() {
   let x = 0;
 
   for (let i = 0; i < bufferLength; i++) {
-    const barHeight = dataArray[i] * 1.5;
-    const r = barHeight + 25 * (i / bufferLength);
-    const g = 0;
-    const b = 0;
-
-    ctx.fillStyle = `rgb(${r},${g},${b})`;
-    ctx.shadowColor = `rgba(255,0,0,0.8)`;
+    const barHeight = dataArray[i] * 1.4;
+    const color = `rgb(${barHeight + 100}, 0, 0)`;
+    ctx.fillStyle = color;
+    ctx.shadowColor = "rgba(255,0,0,0.8)";
     ctx.shadowBlur = 20;
     ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
-
     x += barWidth + 1;
   }
 }
 
-/* Little terror glitch every few seconds */
-setInterval(() => {
-  document.body.style.filter = "contrast(150%) hue-rotate(10deg)";
-  setTimeout(() => (document.body.style.filter = "none"), 100);
-}, 2000);
-
 window.addEventListener("resize", () => {
   canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight * 0.7;
+  canvas.height = window.innerHeight * 0.45;
 });
