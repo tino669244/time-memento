@@ -1,131 +1,87 @@
-/* ---------------- Top Section ---------------- */
-#top-section{
-  height:55vh;
-  position:relative;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  overflow:hidden;
-  background:#100000;
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: black;
+  color: white;
+  font-family: "Orbitron", sans-serif;
 }
 
-/* Zombie GIF background */
-#threeContainer{
-  position:absolute;
-  inset:0;
-  height:100%;
-  width:100%;
-  border-radius:12px;
-  overflow:hidden;
-  z-index:5;
-  box-shadow:0 30px 120px rgba(255,0,0,0.6);
-  border:1px solid rgba(255,80,80,0.1);
-  background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.6)),
-              url('zombie.gif') center center / cover no-repeat;
+/* Canvas infernal */
+#infernalCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  width: 100%;
+  height: 60vh;
+  pointer-events: none;
 }
 
-/* Chrono overlay centered (BIG) */
-.chrono-overlay{
-  position:absolute;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%);
-  z-index:30;
-  background:rgba(0,0,0,0.55);
-  padding:24px 40px;
-  border-radius:16px;
-  border:1px solid rgba(255,255,255,0.05);
-  backdrop-filter:blur(4px);
-  text-align:center;
-}
-#chrono{
-  margin:0;
-  font-size:72px;
-  color:#ff1a1a;
-  text-shadow:0 0 28px rgba(255,60,60,0.38);
-}
-.chrono-sub{
-  margin:4px 0 0;
-  color:#ff9999;
-  font-size:18px;
+/* Zone principale */
+.main {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60vh;
+  text-align: center;
+  flex-direction: column;
 }
 
-/* Robot kely havia ambony */
-.robot-info{
-  position:absolute;
-  top:12px;
-  left:12px;
-  z-index:30;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:4px;
+/* Chronomètre */
+#chronoTitle {
+  font-size: 2.5rem;
+  color: #ff3c3c;
+  text-shadow: 0 0 20px #ff0000;
 }
-.robot-img{
-  width:3cm;
-  height:3cm;
-  object-fit:contain;
+#countdown {
+  font-size: 3.5rem;
+  letter-spacing: 2px;
+  margin: 20px 0;
+  text-shadow: 0 0 20px red;
 }
-.date-clock{
-  background:rgba(0,0,0,0.55);
-  padding:4px 8px;
-  border-radius:6px;
-  text-align:center;
-  font-size:12px;
-  color:#ffb3b3;
+#progressBar {
+  width: 70%;
+  height: 12px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 6px;
+  margin: 10px auto;
 }
-.mini-calendar{
-  background:rgba(0,0,0,0.35);
-  padding:2px 6px;
-  border-radius:6px;
-  font-size:12px;
-  text-align:center;
-  color:#ff4d4d;
+#progressFill {
+  height: 100%;
+  width: 50%;
+  background: linear-gradient(90deg, red, orange, yellow);
+  border-radius: 6px;
+  transition: width 0.2s linear;
 }
 
-/* ---------------- Bottom Section ---------------- */
-#bottom-section{
-  height:45vh;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:flex-start;
-  padding:12px 24px;
-  overflow:hidden;
-  background:#100000;
+/* Boutons */
+.buttons button {
+  background: #900;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin: 10px;
+  font-size: 1.1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s;
 }
-#visualCanvas{
-  width:100%;
-  height:100%;
-  display:block;
-  border-radius:8px;
+.buttons button:hover {
+  background: #f00;
 }
 
-/* Audio controls */
-.audio-controls{
-  margin-top:10px;
-  display:flex;
-  gap:10px;
-  align-items:center;
-  z-index:20;
-}
-button{
-  background:transparent;
-  color:#ff1a1a;
-  border:1px solid #ff1a1a;
-  padding:8px 12px;
-  border-radius:8px;
-  cursor:pointer;
-}
-button:hover{
-  background:#ff1a1a;
-  color:#111;
-  box-shadow:0 6px 18px rgba(255,60,60,0.08);
-}
-.volLabel{
-  font-size:13px;
-  color:#ccc;
-  display:flex;
-  gap:8px;
-  align-items:center;
+/* Poster Zombie */
+#zombiePoster {
+  position: absolute;
+  bottom: -10vh;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 900px;
+  z-index: 1;
+  opacity: 0.35;
+  filter: drop-shadow(0 0 50px #ff0000) saturate(180%);
 }
