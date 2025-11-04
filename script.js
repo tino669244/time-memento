@@ -1,130 +1,95 @@
-/* ======================
-   Ruine Time — main JS
-=======================*/
+const chrono = document.getElementById("chrono");
+const dateClock = document.getElementById("dateClock");
+const miniCalendar = document.getElementById("miniCalendar");
 
-/* -------------------------
-   Chrono de vie + tierces
-------------------------- */
-const chronoEl = document.getElementById('chrono');
-let totalTierces = 0;
+const audioUpload = document.getElementById("audioUpload");
+const playBtn = document.getElementById("playBtn");
+const volumeControl = document.getElementById("volumeControl");
+const canvas = document.getElementById("visualCanvas");
+const ctx = canvas.getContext("2d");
+let audioContext, analyser, source, dataArray, bufferLength, audio, animationId;
 
-function updateChrono(){
-  totalTierces++;
-  const tierce = totalTierces % 100;
-  const totalSeconds = Math.floor(totalTierces / 100);
-  const seconds = totalSeconds % 60;
-  const totalMinutes = Math.floor(totalSeconds / 60);
-  const minutes = totalMinutes % 60;
-  const totalHours = Math.floor(totalMinutes / 60);
-  const hours = totalHours % 24;
-  const days = Math.floor(totalHours / 24);
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight * 0.4;
 
-  chronoEl.textContent = `${String(days).padStart(3,'0')}j | ${String(hours).padStart(2,'0')}h : ${String(minutes).padStart(2,'0')}m : ${String(seconds).padStart(2,'0')}s : ${String(tierce).padStart(2,'0')}`;
+// ⏳ Chrono de Vie
+function startChrono() {
+  const birthDate = new Date("2005-04-12"); // ovay raha mila manokana
+  setInterval(() => {
+    const now = new Date();
+    const diff = now - birthDate;
+    const years = Math.floor(diff / (1000*60*60*24*365));
+    const days = Math.floor((diff / (1000*60*60*24)) % 365);
+    const hours = Math.floor((diff / (1000*60*60)) % 24);
+    const minutes = Math.floor((diff / (1000*60)) % 60);
+    const seconds = Math.floor((diff / 1000) % 60);
+    chrono.textContent = `${years}Y ${days}D ${hours}:${minutes}:${seconds}`;
+  }, 1000);
 }
-setInterval(updateChrono, 10); // 10ms → tierce
 
-/* -------------------------
-   Robot info: Date + horloge live
-------------------------- */
-const dateEl = document.getElementById('currentDate');
-const timeEl = document.getElementById('currentTime');
-
-function updateRobotInfo(){
+// 📅 Date + mini calendar
+function updateDate() {
   const now = new Date();
-  const dd = String(now.getDate()).padStart(2,'0');
-  const mm = String(now.getMonth()+1).padStart(2,'0');
-  const yyyy = now.getFullYear();
-  dateEl.textContent = `${dd} / ${mm} / ${yyyy}`;
-
-  const hh = String(now.getHours()).padStart(2,'0');
-  const min = String(now.getMinutes()).padStart(2,'0');
-  const ss = String(now.getSeconds()).padStart(2,'0');
-  timeEl.textContent = `${hh} : ${min} : ${ss}`;
+  dateClock.textContent = now.toLocaleTimeString();
+  miniCalendar.textContent = now.toLocaleDateString();
 }
-setInterval(updateRobotInfo, 1000);
+setInterval(updateDate, 1000);
 
-/* -------------------------
-   Audio + fire reactive visualizer
-------------------------- */
-const audio = document.getElementById('audio');
-const audioFile = document.getElementById('audioFile');
-const playBtn = document.getElementById('playBtn');
-const volRange = document.getElementById('volRange');
-const canvas = document.getElementById('visualCanvas');
-const ctx = canvas.getContext('2d');
+// 🔥 Audio Reactive Fire
+function drawFire() {
+  animationId = requestAnimationFrame(drawFire);
+  analyser.getByteFrequencyData(dataArray);
+  ctx.fillStyle = "rgba(0,0,0,0.2)";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-let audioCtx, analyser, source, dataArray, bufferLength;
+  const barWidth = (canvas.width / bufferLength) * 2.5;
+  let x = 0;
+  for(let i = 0; i < bufferLength; i++){
+    const barHeight = dataArray[i]*1.6;
+    const hue = 20 + (barHeight / 2);
+    ctx.fillStyle = `hsl(${hue},100%,50%)`;
+    ctx.fillRect(x, canvas.height - barHeight/2, barWidth, barHeight);
+    x += barWidth + 1;
+  }
+}
 
-function setupAudio(){
-  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  analyser = audioCtx.createAnalyser();
-  source = audioCtx.createMediaElementSource(audio);
+// 🎵 Audio Setup
+function setupAudio(file){
+  if(audioContext){
+    cancelAnimationFrame(animationId);
+    audioContext.close();
+  }
+  audio = new Audio(URL.createObjectURL(file));
+  audio.crossOrigin = "anonymous";
+  audioContext = new AudioContext();
+  analyser = audioContext.createAnalyser();
+  source = audioContext.createMediaElementSource(audio);
   source.connect(analyser);
-  analyser.connect(audioCtx.destination);
+  analyser.connect(audioContext.destination);
   analyser.fftSize = 256;
   bufferLength = analyser.frequencyBinCount;
   dataArray = new Uint8Array(bufferLength);
+  playBtn.onclick = () => {
+    if(audio.paused){
+      audio.play();
+      audioContext.resume();
+      drawFire();
+      playBtn.textContent = "⏸ Pause";
+    }else{
+      audio.pause();
+      playBtn.textContent = "▶️ Play";
+    }
+  };
+  volumeControl.oninput = () => {
+    audio.volume = volumeControl.value;
+  };
 }
 
-audioFile.addEventListener('change', function(e){
+audioUpload.addEventListener("change", (e) => {
   const file = e.target.files[0];
-  if(file){
-    const url = URL.createObjectURL(file);
-    audio.src = url;
-    audio.load();
-  }
+  if(file) setupAudio(file);
 });
 
-playBtn.addEventListener('click', function(){
-  if(audioCtx==null) setupAudio();
-  if(audio.paused) audio.play();
-  else audio.pause();
-});
-
-volRange.addEventListener('input', function(){
-  audio.volume = volRange.value;
-});
-
-/* Canvas resize */
-function resizeCanvas(){
-  canvas.width = canvas.offsetWidth;
-  canvas.height = canvas.offsetHeight;
-}
-window.addEventListener('resize', resizeCanvas);
-resizeCanvas();
-
-/* Fire effect */
-function drawFire(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  if(!analyser) return;
-
-  analyser.getByteFrequencyData(dataArray);
-
-  const barWidth = canvas.width / bufferLength;
-  for(let i=0;i<bufferLength;i++){
-    const value = dataArray[i];
-    const percent = value / 255;
-    const hue = 20 + percent*30; // fire hue
-    const alpha = 0.4 + 0.6*percent;
-
-    ctx.fillStyle = `hsla(${hue}, 100%, 50%, ${alpha})`;
-    const barHeight = percent * canvas.height;
-    ctx.fillRect(i*barWidth, canvas.height - barHeight, barWidth, barHeight);
-  }
-
-  requestAnimationFrame(drawFire);
-}
-drawFire();
-
-/* -------------------------
-   Navigation menu
-------------------------- */
-const pages = document.querySelectorAll('.page');
-document.querySelectorAll('.nav-links a').forEach(a=>{
-  a.addEventListener('click', function(e){
-    e.preventDefault();
-    const target = this.getAttribute('href').substring(1);
-    pages.forEach(p=>p.classList.remove('active'));
-    document.getElementById(target).classList.add('active');
-  });
-});
+// 🔛 Start chrono + date
+startChrono();
+updateDate();
