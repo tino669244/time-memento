@@ -1,41 +1,41 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tino Andaina - Chrono de Vie 🔥</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ruine Time - Memento</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div id="top-section">
-    <!-- Zombie background -->
-    <div id="threeContainer"></div>
 
-    <!-- Robot info -->
-    <div class="robot-info">
-      <img src="robot(2).gif" alt="robot" class="robot-img" />
-      <div class="date-clock" id="dateClock"></div>
-      <div class="mini-calendar" id="miniCalendar"></div>
-    </div>
+  <!-- Canvas effect fire infernal -->
+  <canvas id="infernalCanvas"></canvas>
 
-    <!-- Chrono Overlay -->
-    <div class="chrono-overlay">
-      <h1 id="chrono">00:00:00</h1>
-      <p class="chrono-sub">Chronomètre de Vie</p>
-    </div>
-  </div>
-
-  <!-- Bottom Section (fire + audio) -->
-  <div id="bottom-section">
-    <canvas id="visualCanvas"></canvas>
-    <div class="audio-controls">
-      <button id="playBtn">▶️ Play</button>
-      <label class="volLabel">🔊 Volume
-        <input type="range" id="volumeControl" min="0" max="1" step="0.01" value="0.6">
-      </label>
-      <input type="file" id="audioUpload" accept="audio/*">
+  <!-- Section principale -->
+  <div class="main">
+    <div class="chrono-container">
+      <h1 id="chronoTitle">⏳ Chronomètre de Vie ⏳</h1>
+      <div id="countdown">
+        <span id="days">000</span>d :
+        <span id="hours">00</span>h :
+        <span id="minutes">00</span>m :
+        <span id="seconds">00</span>s :
+        <span id="tierces">00</span>
+      </div>
+      <div id="progressBar">
+        <div id="progressFill"></div>
+      </div>
+      <p id="result">Entrez votre date de naissance ci-dessous 👇</p>
+      <input type="date" id="birthdate">
+      <div class="buttons">
+        <button id="goBtn">Prédire</button>
+        <button id="randomBtn">Aléatoire</button>
+      </div>
     </div>
   </div>
+
+  <!-- Poster Zombie 3D -->
+  <img src="zombie.gif" id="zombiePoster" alt="Zombie 3D">
 
   <script src="script.js"></script>
 </body>
