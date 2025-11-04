@@ -20,17 +20,16 @@ html,body{height:100%;margin:0;background:#000;color:#e9e9e9;font-family:'Share 
 }
 
 /* Three container with zombie GIF background */
-#threeContainer{
+#threeContainer {
   position:absolute;
   inset:56px 2% auto 2%;
   height:calc(55vh - 80px);
   border-radius:12px;
   overflow:hidden;
   z-index:10;
-  box-shadow:0 30px 120px rgba(0,0,0,0.8);
-  border:1px solid rgba(255,80,80,0.03);
-  background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.6)),
-              url('/zombie.gif') center center / cover no-repeat;
+  background: url('zombie.gif') center center / cover no-repeat;
+}
+
 }
 
 /* Chrono overlay centered */
