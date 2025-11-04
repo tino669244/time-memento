@@ -1,12 +1,15 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ruine Time Memento</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Ruine Time — Chrono de Vie</title>
   <link rel="stylesheet" href="style.css">
+  <script src="https://unpkg.com/three@0.155.0/build/three.min.js"></script>
+  <script src="https://unpkg.com/three@0.155.0/examples/js/controls/OrbitControls.js"></script>
 </head>
 <body>
+
   <!-- Navigation -->
   <nav class="navbar">
     <div class="logo">☠ Ruine Time ☠</div>
@@ -17,37 +20,48 @@
     </ul>
   </nav>
 
-  <!-- Haut : Chrono -->
+  <!-- TOP: Zombie 3D + Chrono + Robot Info -->
   <section id="top-section">
-    <div class="chrono-container">
-      <h1 id="chrono">00:00:00</h1>
-      <p class="chrono-sub">Le temps s'effrite...</p>
+    <div id="threeContainer"></div>
+
+    <!-- Chronomètre centré -->
+    <div class="chrono-overlay">
+      <h1 id="chrono">00:00:00:00:00</h1>
+      <p class="chrono-sub">Chronomètre de vie</p>
+    </div>
+
+    <!-- Robot / Date Info -->
+    <div class="robot-info">
+      <img src="robot.png" alt="Robot" class="robot-img">
+      <div class="date-clock">
+        <p id="currentDate">-- / -- / ----</p>
+        <p id="currentTime">-- : -- : --</p>
+      </div>
+      <div class="mini-calendar">
+        <p id="miniCalendar">📅</p>
+      </div>
     </div>
   </section>
 
-  <!-- Bas : Audio visualizer -->
+  <!-- Bottom section: audio visualizer -->
   <section id="bottom-section">
-    <canvas id="graffitiCanvas"></canvas>
+    <canvas id="visualCanvas"></canvas>
     <div class="audio-controls">
       <input type="file" id="audioFile" accept="audio/*">
       <button id="playBtn">▶ Jouer</button>
+      <label class="volLabel">Volume
+        <input id="volRange" type="range" min="0" max="1" step="0.01" value="0.45">
+      </label>
     </div>
   </section>
 
-  <!-- Pages internes -->
-  <section id="home" class="page active">
-    <p class="page-text">Bienvenue dans les ruines du temps...</p>
-  </section>
-
-  <section id="memoires" class="page">
-    <p class="page-text">Les souvenirs s’effacent lentement.</p>
-  </section>
-
-  <section id="apropos" class="page">
-    <p class="page-text">Créé par Tino — l’ombre veille toujours.</p>
-  </section>
+  <!-- Pages overlay -->
+  <section id="home" class="page active"><p class="page-text">Bienvenue dans les ruines du temps...</p></section>
+  <section id="memoires" class="page"><p class="page-text">Les souvenirs s’effacent lentement.</p></section>
+  <section id="apropos" class="page"><p class="page-text">Créé par Tino — l’ombre veille.</p></section>
 
   <audio id="audio" crossorigin="anonymous"></audio>
+
   <script src="script.js"></script>
 </body>
 </html>
