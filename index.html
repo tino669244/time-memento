@@ -3,177 +3,73 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Ruine Time — Graffiti + Chrono (single)</title>
+  <title>Ruine Time — Sombre + Audio Terreur</title>
   <style>
     :root{
-      --bg-dark:#0b0b0d;
-      --panel-white:#ffffff;
-      --accent:#ff3030;
-      --muted:rgba(255,255,255,0.14);
+      --bg-900:#060607;
+      --bg-800:#0b0b0d;
+      --panel-900:#0e0e10;
+      --muted:#9aa0a6;
+      --accent:#ff4b4b;
+      --glass: rgba(255,255,255,0.04);
     }
-    html,body{
-      height:100%;
-      margin:0;
-      padding:0;
-      font-family: Inter, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      background: var(--bg-dark);
-      color:#eee;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-      overflow:hidden;
+    html,body{height:100%;margin:0;padding:0; background:linear-gradient(180deg,#050506 0%, #0b0b0d 100%); color:#e8eef2; font-family:Inter, "Segoe UI", Roboto, system-ui, -apple-system, "Helvetica Neue", Arial; overflow:hidden;}
+    /* layout */
+    #mainWrapper{display:flex; width:100vw; height:100vh; align-items:stretch;}
+    #leftPanel{width:38%; min-width:300px; background:linear-gradient(180deg,var(--panel-900), #07070a); color:#dfe7ea; padding:28px; box-sizing:border-box; display:flex; flex-direction:column; gap:18px; border-right:1px solid rgba(255,255,255,0.03); overflow:auto;}
+    /* nav */
+    nav.topNav{display:flex; align-items:center; justify-content:space-between; gap:12px;}
+    .brand{display:flex; align-items:center; gap:12px;}
+    .logo{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#2a2a2a,#111);display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--accent);box-shadow:0 6px 18px rgba(0,0,0,0.6);}
+    .navLinks{display:flex; gap:10px; align-items:center;}
+    .navLinks a{color:var(--muted); text-decoration:none; font-weight:600; font-size:14px; padding:8px 10px; border-radius:8px;}
+    .navLinks a.active, .navLinks a:hover{background:rgba(255,255,255,0.02); color:#fff;}
+
+    h1{margin:0;font-size:22px;letter-spacing:-0.2px;}
+    p.lead{margin:0;color:var(--muted);font-size:13px;}
+
+    .metaCard{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:14px; border-radius:10px; border:1px solid rgba(255,255,255,0.02);}
+    .controlsRow{display:flex; gap:8px; align-items:center;}
+    input[type="date"]{padding:10px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:#fff;}
+    button.btn{padding:10px 12px;border-radius:10px;border:0;cursor:pointer;background:var(--accent);color:#111;font-weight:700;box-shadow: 0 8px 20px rgba(255,75,75,0.08);}
+    button.ghost{padding:8px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--muted);cursor:pointer;}
+
+    #rightPanel{width:62%; position:relative; overflow:hidden; display:flex; align-items:stretch; justify-content:stretch;}
+    #graffitiCanvas{position:absolute; inset:0; width:100%; height:100%; z-index:0; display:block; background: radial-gradient(circle at 20% 30%, rgba(255,255,255,0.02), transparent 6%), radial-gradient(circle at 80% 60%, rgba(255,0,0,0.02), transparent 8%);}
+
+    /* chrono box */
+    #chronoContainer{position:absolute; right:6%; bottom:8%; width:420px; max-width:86%; z-index:12; background: linear-gradient(180deg, rgba(0,0,0,0.46), rgba(6,6,6,0.64)); border-radius:14px; padding:22px; box-shadow: 0 18px 60px rgba(0,0,0,0.7); color:#fff; backdrop-filter: blur(6px); border:1px solid rgba(255,255,255,0.03); text-align:center;}
+    #chrono{font-size:54px;font-weight:900;color:var(--accent); text-shadow: 0 0 20px rgba(255,60,60,0.18); margin-bottom:8px; letter-spacing:1px;}
+    #result{font-size:13px;color:var(--muted); margin-bottom:10px;}
+    #progressBar{width:100%; height:12px; background:rgba(255,255,255,0.03); border-radius:999px; overflow:hidden; margin:10px 0;}
+    #progressFill{width:0%; height:100%; background: linear-gradient(90deg,#ff3b3b,#ff9a9a); transition: width 300ms linear;}
+    #progressPct{font-size:12px;color:#c9d0d6;}
+
+    /* overlay controls */
+    #overlayControls{position:absolute; top:18px; right:18px; z-index:13; display:flex; gap:10px;}
+    .smallBtn{padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,0.05);background:rgba(0,0,0,0.3);color:#fff;cursor:pointer;font-weight:700;}
+
+    /* audio controls row inside left panel */
+    .audioRow{display:flex; gap:8px; align-items:center; margin-top:8px;}
+    .audioRow input[type="range"]{width:140px;}
+
+    /* terror pulse (class toggled) */
+    .terrorPulse { animation: terrorPulse 900ms ease-in-out infinite; }
+    @keyframes terrorPulse {
+      0%{ transform: scale(1); filter: hue-rotate(0deg) saturate(1); }
+      50%{ transform: scale(1.02); filter: hue-rotate(-6deg) saturate(1.1); }
+      100%{ transform: scale(1); filter: hue-rotate(0deg) saturate(1); }
     }
 
-    /* main split */
-    #mainWrapper{
-      display:flex;
-      width:100vw;
-      height:100vh;
-    }
-
-    /* left white panel */
-    #leftPanel{
-      width:45%;
-      min-width:320px;
-      background: var(--panel-white);
-      color:#111;
-      display:flex;
-      flex-direction:column;
-      padding:36px;
-      box-sizing:border-box;
-      gap:18px;
-      overflow:auto;
-    }
-    #leftPanel h1{
-      margin:0;
-      font-size:28px;
-      letter-spacing:-0.5px;
-    }
-    #leftPanel p{
-      margin:0;
-      color:#444;
-    }
-    .metaCard{
-      background:#f7f7f8;
-      padding:14px;
-      border-radius:10px;
-      box-shadow: 0 6px 18px rgba(15,15,15,0.04);
-    }
-    .controlsRow{
-      display:flex;
-      gap:8px;
-      align-items:center;
-    }
-    input[type="date"]{
-      padding:8px 10px;
-      border-radius:8px;
-      border:1px solid #ddd;
-      background:white;
-    }
-    button.btn{
-      padding:8px 12px;
-      border-radius:8px;
-      border:0;
-      cursor:pointer;
-      background:var(--accent);
-      color:white;
-      font-weight:600;
-    }
-    button.ghost{
-      background:transparent;
-      color:#444;
-      border:1px solid #ddd;
-    }
-
-    /* right panel with canvas */
-    #rightPanel{
-      width:55%;
-      position:relative;
-      overflow:hidden;
-      background: linear-gradient(180deg, rgba(8,8,8,1) 0%, rgba(12,12,12,1) 100%);
-      display:flex;
-      align-items:stretch;
-      justify-content:stretch;
-    }
-
-    /* canvas covers rightPanel */
-    #graffitiCanvas{
-      position:absolute;
-      inset:0;
-      width:100%;
-      height:100%;
-      display:block;
-      z-index:0;
-      background: radial-gradient(ellipse at center, rgba(255,255,255,0.02), transparent 20%);
-    }
-
-    /* chrono container sits above canvas */
-    #chronoContainer{
-      position:absolute;
-      right:8%;
-      bottom:8%;
-      width:420px;
-      max-width:80%;
-      z-index:10;
-      background: linear-gradient(180deg, rgba(0,0,0,0.46), rgba(8,8,8,0.64));
-      border-radius:14px;
-      padding:22px;
-      box-shadow: 0 12px 40px rgba(0,0,0,0.6);
-      text-align:center;
-      color:#fff;
-      backdrop-filter: blur(6px);
-      border:1px solid rgba(255,255,255,0.04);
-    }
-
-    #chrono{
-      font-size:48px;
-      font-weight:800;
-      letter-spacing:1px;
-      color:var(--accent);
-      text-shadow: 0 0 18px rgba(255,48,48,0.18);
-      margin-bottom:8px;
-    }
-    #result{
-      font-size:14px;
-      color:#ddd;
-      margin-bottom:10px;
-    }
-
-    #progressBar{
-      width:100%;
-      height:12px;
-      background:rgba(255,255,255,0.06);
-      border-radius:999px;
-      overflow:hidden;
-      margin:8px 0 6px;
-    }
-    #progressFill{
-      width:0%;
-      height:100%;
-      background: linear-gradient(90deg, #ff3b3b, #ff9a9a);
-      transition: width 300ms linear;
-    }
-    #progressPct{
-      font-size:12px;
-      color:#ccc;
-    }
-
-    /* small overlay UI in top-right for quick actions */
-    #overlayControls{
-      position:absolute;
-      top:18px;
-      right:18px;
-      z-index:11;
-      display:flex;
-      gap:10px;
-    }
-    .smallBtn{
-      padding:8px 10px;
-      border-radius:10px;
-      border:1px solid rgba(255,255,255,0.06);
-      background:rgba(0,0,0,0.28);
-      color:#fff;
-      cursor:pointer;
-      font-weight:600;
+    /* slight screen shake */
+    .shake { animation: shakeAnim 420ms linear; }
+    @keyframes shakeAnim {
+      0%{ transform: translate(0,0); }
+      20%{ transform: translate(-4px,2px); }
+      40%{ transform: translate(3px,-2px); }
+      60%{ transform: translate(-2px,1px); }
+      80%{ transform: translate(2px,-1px); }
+      100%{ transform: translate(0,0); }
     }
 
     /* responsive */
@@ -182,25 +78,34 @@
       #rightPanel{ width:100%; }
       #chronoContainer{ left:50%; right:auto; transform:translateX(-50%); width:86%; bottom:6%; }
     }
+
   </style>
 </head>
 <body>
   <div id="mainWrapper">
-    <aside id="leftPanel" aria-label="Left panel">
-      <h1>Ruine Time</h1>
-      <p>Ampifanaraho: ilany havia (blanc) & ilany havanana (graffiti canvas + chrono tokana)</p>
 
-      <div class="metaCard">
-        <strong>Fampiasa</strong>
-        <p style="margin-top:8px">Ampidiro ny daty teraka (YYYY-MM-DD) ary tsindrio <em>Predict</em>. Ity fampiharana ity dia simulation fotsiny — mitazona fitondran-tena etika: tsy mpitsabo ary tsy vinavina siantifika.</p>
-      </div>
-
-      <div class="metaCard">
-        <div style="display:flex;justify-content:space-between;align-items:center;">
-          <div><strong>Controls</strong></div>
-          <div style="font-size:12px;color:#666">Demo</div>
+    <aside id="leftPanel" aria-label="Left panel with navigation">
+      <nav class="topNav" role="navigation" aria-label="Main">
+        <div class="brand">
+          <div class="logo">RT</div>
+          <div>
+            <div style="font-size:14px;font-weight:800;color:#fff">Ruine Time</div>
+            <div style="font-size:12px;color:var(--muted)">Sombre Demo</div>
+          </div>
         </div>
 
+        <div class="navLinks" role="menubar" aria-label="Links">
+          <a href="#" class="active" id="navHome">Home</a>
+          <a href="#" id="navAbout">About</a>
+          <a href="#" id="navSettings">Settings</a>
+        </div>
+      </nav>
+
+      <h1>Chrono — Canvas — Terreur</h1>
+      <p class="lead">Ampidiro ny daty teraka ary tsindrio <strong>Predict</strong>. Misy koa safidy audio sy effets terror izay azo atomboka rehefa manindry ianao.</p>
+
+      <div class="metaCard" id="controlsCard">
+        <strong>Controls</strong>
         <div style="margin-top:12px" class="controlsRow">
           <input type="date" id="birthdate" aria-label="Birth date">
           <button class="btn" id="goBtn">Predict</button>
@@ -212,23 +117,32 @@
           <button class="ghost" id="reseedBtn">Reseed Tags</button>
         </div>
 
-        <div style="margin-top:12px;font-size:13px;color:#666">Sample preview ny daty sy procent progress dia hiseho eo amin'ny ilany havanana.</div>
+        <div style="margin-top:12px;color:var(--muted);font-size:13px">Tsy vinavina ara-pahasalamana — simulation fotsiny. Raha te hanomboka audio, tsindrio <strong>Play</strong> (na zavatra hafa mba hanomezana interaction).</div>
+
+        <div style="margin-top:12px" class="audioRow">
+          <button class="smallBtn" id="playAudioBtn">Play Audio</button>
+          <button class="smallBtn" id="pauseAudioBtn" disabled>Pause</button>
+          <button class="smallBtn" id="muteAudioBtn">Mute</button>
+          <input id="volRange" type="range" min="0" max="1" step="0.01" value="0.45" aria-label="Volume">
+        </div>
+
+        <div style="margin-top:12px; display:flex; gap:8px; align-items:center;">
+          <label style="font-size:13px;color:var(--muted);">Terror effects</label>
+          <button class="ghost" id="togglePulse">Pulse</button>
+          <button class="ghost" id="triggerShake">Shake</button>
+        </div>
       </div>
 
       <div class="metaCard">
-        <strong>Notes</strong>
-        <ul style="margin:8px 0 0 18px;color:#666">
-          <li>Deterministic hash ampiasaina amin'ny daty teraka</li>
-          <li>Random mode tsy deterministic</li>
-          <li>Aza ampiasaina ho fanapahan-kevitra manan-danja ara-pahasalamana</li>
-        </ul>
+        <strong>About</strong>
+        <p style="margin-top:8px;color:var(--muted)">Ity pejy ity dia demo an'ny Ruine Time: graffiti canvas interactive miaraka amin'ny chrono tokana sy synth audio mampihoron-koditra. Mifanaraka ny deploy amin'ny GitHub Pages.</p>
       </div>
 
-      <footer style="margin-top:auto;color:#999;font-size:12px">© Ruine Time — Demo</footer>
+      <footer style="margin-top:auto;color:var(--muted);font-size:12px">© Ruine Time — Demo · Respect privacy</footer>
     </aside>
 
     <main id="rightPanel" aria-label="Right panel">
-      <canvas id="graffitiCanvas"></canvas>
+      <canvas id="graffitiCanvas" role="img" aria-label="Graffiti canvas"></canvas>
 
       <div id="overlayControls" aria-hidden="true">
         <button class="smallBtn" id="toggleGlow">Glow</button>
@@ -238,36 +152,37 @@
       <div id="chronoContainer" role="region" aria-label="Countdown">
         <div id="chrono">--:--:--</div>
         <div id="result">Aucun résultat</div>
-
         <div id="progressBar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
           <div id="progressFill"></div>
         </div>
         <div id="progressPct">--%</div>
       </div>
     </main>
+
   </div>
 
   <script>
-  /*******************************
-   * Graffiti canvas (modified)
-   *******************************/
+  /****************************************************************
+   * Canvas graffiti + deterministic date + single chrono + audio
+   ****************************************************************/
+  // Canvas setup (use devicePixelRatio for crisp)
   const canvas = document.getElementById('graffitiCanvas');
   const ctx = canvas.getContext('2d');
 
   function resizeCanvas(){
-    // use devicePixelRatio for crispness
+    const rect = canvas.getBoundingClientRect();
     const dpr = Math.max(1, window.devicePixelRatio || 1);
-    canvas.width = Math.floor(canvas.clientWidth * dpr);
-    canvas.height = Math.floor(canvas.clientHeight * dpr);
-    canvas.style.width = canvas.clientWidth + "px";
-    canvas.style.height = canvas.clientHeight + "px";
+    canvas.width = Math.floor(rect.width * dpr);
+    canvas.height = Math.floor(rect.height * dpr);
+    canvas.style.width = rect.width + "px";
+    canvas.style.height = rect.height + "px";
     ctx.setTransform(dpr,0,0,dpr,0,0);
   }
   window.addEventListener('resize', resizeCanvas);
-  // ensure initial size after page layout
+  // call after layout
   requestAnimationFrame(resizeCanvas);
 
-  const G_TAGS = ["💀","🔥","☠️","⏳","⚡","✞","☩","RUINE","TIME","⟡"];
+  const G_TAGS = ["💀","🔥","☠️","⏳","⚡","✞","☩","RUINE","TIME","⟡","MEMENTO"];
   let particles = [];
   let enableMotion = true;
   let enableGlow = true;
@@ -275,23 +190,22 @@
   class Tag {
     constructor(x,y,txt){
       this.x = x; this.y = y; this.txt = txt;
-      this.size = 18 + Math.random()*46;
-      this.vx = (Math.random()-0.5)*1.6;
-      this.vy = (Math.random()-0.5)*1.6;
+      this.size = 18 + Math.random()*58;
+      this.vx = (Math.random()-0.5)*1.8;
+      this.vy = (Math.random()-0.5)*1.8;
       this.rot = (Math.random()-0.5)*0.4;
       this.alpha = 0.28 + Math.random()*0.6;
-      this.base = {x, y};
+      this.base = {x,y};
     }
     update(){
       if(enableMotion){
         this.x += this.vx; this.y += this.vy;
         this.rot += (Math.random()-0.5)*0.02;
-        if(this.x < -50 || this.x > canvas.clientWidth + 50) this.vx *= -1;
-        if(this.y < -50 || this.y > canvas.clientHeight + 50) this.vy *= -1;
+        if(this.x < -60 || this.x > canvas.clientWidth + 60) this.vx *= -1;
+        if(this.y < -60 || this.y > canvas.clientHeight + 60) this.vy *= -1;
       } else {
-        // subtle pulse around base
-        this.x = this.base.x + Math.sin(Date.now()/2000 + this.size)*6;
-        this.y = this.base.y + Math.cos(Date.now()/2000 + this.size)*6;
+        this.x = this.base.x + Math.sin(Date.now()/2100 + this.size)*6;
+        this.y = this.base.y + Math.cos(Date.now()/2100 + this.size)*6;
       }
     }
     draw(){
@@ -300,25 +214,20 @@
       ctx.rotate(this.rot);
       ctx.globalAlpha = this.alpha;
       ctx.font = `${this.size}px "Impact", "Arial Black", sans-serif`;
-      // shadow / glow
       if(enableGlow){
-        ctx.shadowColor = "rgba(255,60,60,0.25)";
-        ctx.shadowBlur = Math.min(30, this.size * 0.6);
-      } else {
-        ctx.shadowBlur = 0;
-      }
-      // stroke + fill
-      ctx.fillStyle = `rgba(255,30,30,${0.9*this.alpha})`;
-      ctx.strokeStyle = `rgba(0,0,0,${0.6*this.alpha})`;
+        ctx.shadowColor = "rgba(255,50,50,0.22)";
+        ctx.shadowBlur = Math.min(36, this.size * 0.6);
+      } else ctx.shadowBlur = 0;
       ctx.lineWidth = Math.max(2, this.size*0.06);
-      ctx.miterLimit = 2;
+      ctx.strokeStyle = `rgba(0,0,0,${0.7*this.alpha})`;
+      ctx.fillStyle = `rgba(255,30,30,${0.92*this.alpha})`;
       ctx.strokeText(this.txt, 0, 0);
       ctx.fillText(this.txt, 0, 0);
       ctx.restore();
     }
   }
 
-  function initTags(count=30){
+  function initTags(count=34){
     particles = [];
     for(let i=0;i<count;i++){
       const x = Math.random()*canvas.clientWidth;
@@ -327,33 +236,25 @@
       particles.push(new Tag(x,y,t));
     }
   }
-  initTags(36);
-
-  function clearCanvasBg(){
-    // slightly translucent clear to preserve motion feel
-    ctx.fillStyle = 'rgba(6,6,6,0.12)';
-    ctx.fillRect(0,0,canvas.clientWidth, canvas.clientHeight);
-  }
+  initTags(34);
 
   function animate(){
-    // custom clear (gives trailing feel)
+    // background subtle dark overlay (clear)
     ctx.clearRect(0,0,canvas.clientWidth, canvas.clientHeight);
-    // faint vignette
-    const grad = ctx.createRadialGradient(canvas.clientWidth/2, canvas.clientHeight/2, canvas.clientWidth*0.05, canvas.clientWidth/2, canvas.clientHeight/2, Math.max(canvas.clientWidth, canvas.clientHeight)/1.2);
+    const grad = ctx.createRadialGradient(canvas.clientWidth*0.5, canvas.clientHeight*0.5, canvas.clientWidth*0.05, canvas.clientWidth*0.5, canvas.clientHeight*0.5, Math.max(canvas.clientWidth, canvas.clientHeight)/1.1);
     grad.addColorStop(0, 'rgba(255,255,255,0.02)');
-    grad.addColorStop(1, 'rgba(0,0,0,0.12)');
+    grad.addColorStop(1, 'rgba(0,0,0,0.14)');
     ctx.fillStyle = grad;
     ctx.fillRect(0,0,canvas.clientWidth, canvas.clientHeight);
 
-    // draw tags
     particles.forEach(p => { p.update(); p.draw(); });
     requestAnimationFrame(animate);
   }
   requestAnimationFrame(animate);
 
-  /*******************************
-   * Deterministic death-date generator
-   *******************************/
+  /**********************
+   * Deterministic hash
+   **********************/
   function hashCode(str){
     let h = 2166136261 >>> 0;
     for(let i=0;i<str.length;i++){
@@ -362,17 +263,16 @@
     }
     return h;
   }
-
   function daysOffsetFromBirthString(birthStr){
     const seed = hashCode(birthStr);
-    const maxDays = 365000; // ~1000 years
+    const maxDays = 365000;
     const offset = (seed % maxDays) + 1;
     return offset;
   }
 
-  /*******************************
-   * Countdown (single chrono)
-   *******************************/
+  /************************
+   * Chrono single
+   ************************/
   const goBtn = document.getElementById('goBtn');
   const randomBtn = document.getElementById('randomBtn');
   const clearBtn = document.getElementById('clearBtn');
@@ -410,7 +310,6 @@
     if(!targetDate) return;
     const now = Date.now();
     const diff = targetDate.getTime() - now;
-
     if(diff <= 0){
       chronoEl.textContent = "💀 00:00:00";
       progressFill.style.width = '0%';
@@ -418,16 +317,12 @@
       resultEl.textContent = "💀 Temps écoulé.";
       return;
     }
-
-    // show as HHH:MM:SS (hours might be >24 if many days left)
     const totalSec = Math.floor(diff / 1000);
     const hours = Math.floor(totalSec / 3600);
     const mins = Math.floor((totalSec % 3600) / 60);
     const secs = totalSec % 60;
-    const chronoText = `${String(hours).padStart(2,'0')}:${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
-    chronoEl.textContent = chronoText;
+    chronoEl.textContent = `${String(hours).padStart(2,'0')}:${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
 
-    // progress%
     if(birthDateForTotal && !isNaN(birthDateForTotal.getTime())){
       const totalLifeMs = targetDate.getTime() - birthDateForTotal.getTime();
       if(totalLifeMs > 0){
@@ -448,7 +343,6 @@
   function startCountdownLoop(birthForTotal){
     if(countdownTimer) clearInterval(countdownTimer);
     updateCountdownOnce(birthForTotal);
-    // every 1s is enough for single chrono
     countdownTimer = setInterval(()=> updateCountdownOnce(birthForTotal), 1000);
   }
 
@@ -461,11 +355,7 @@
     const ok = setTargetFromBirthString(birthVal);
     if(!ok) alert('Date invalide.');
   });
-
-  randomBtn.addEventListener('click', ()=> {
-    setTargetRandomNow();
-  });
-
+  randomBtn.addEventListener('click', ()=> setTargetRandomNow());
   clearBtn.addEventListener('click', ()=> {
     targetDate = null;
     if(countdownTimer) clearInterval(countdownTimer);
@@ -474,10 +364,7 @@
     progressFill.style.width = '0%';
     progressPct.textContent = '--%';
   });
-
-  reseedBtn.addEventListener('click', ()=> {
-    initTags(36);
-  });
+  reseedBtn.addEventListener('click', ()=> initTags(34));
 
   // overlay toggles
   document.getElementById('toggleGlow').addEventListener('click', ()=>{
@@ -489,7 +376,246 @@
     document.getElementById('toggleMotion').textContent = enableMotion ? 'Motion' : 'Still';
   });
 
-  /* optional: preload sample birthdate (25 years ago), don't auto-run prediction */
+  // nav links: minimal behavior (anchor-like)
+  document.getElementById('navHome').addEventListener('click', (e)=>{ e.preventDefault(); document.getElementById('controlsCard').scrollIntoView({behavior:'smooth'}); });
+  document.getElementById('navAbout').addEventListener('click', (e)=>{ e.preventDefault(); alert('Ruine Time — Demo\\nCanvas + Chrono + Audio synth.'); });
+  document.getElementById('navSettings').addEventListener('click', (e)=>{ e.preventDefault(); alert('Settings: use left panel controls.'); });
+
+  /*************************
+   * Audio "terreur" synth (WebAudio)
+   * - drone (low sine + subtle detuned)
+   * - filtered noise bursts
+   * - occasional stingers
+   *************************/
+  let audioCtx = null;
+  let masterGain = null;
+  let droneOsc = null;
+  let droneDetune = null;
+  let noiseTimer = null;
+  let stingerTimer = null;
+  let isPlaying = false;
+  let isMuted = false;
+
+  const playBtn = document.getElementById('playAudioBtn');
+  const pauseBtn = document.getElementById('pauseAudioBtn');
+  const muteBtn = document.getElementById('muteAudioBtn');
+  const volRange = document.getElementById('volRange');
+
+  function ensureAudio(){
+    if(audioCtx) return;
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    masterGain = audioCtx.createGain();
+    masterGain.gain.value = parseFloat(volRange.value || 0.45);
+    masterGain.connect(audioCtx.destination);
+  }
+
+  // create drone
+  function startDrone(){
+    if(!audioCtx) ensureAudio();
+    // drone base
+    droneOsc = audioCtx.createOscillator();
+    droneOsc.type = 'sine';
+    droneOsc.frequency.value = 28 + Math.random()*6; // very low
+    // detuned triangle-ish oscillator for beating
+    droneDetune = audioCtx.createOscillator();
+    droneDetune.type = 'sawtooth';
+    droneDetune.frequency.value = droneOsc.frequency.value * 1.01; // slight detune
+
+    // combine with lowpass to mellow it
+    const droneGain = audioCtx.createGain();
+    droneGain.gain.value = 0.35;
+
+    const lowpass = audioCtx.createBiquadFilter();
+    lowpass.type = 'lowpass';
+    lowpass.frequency.value = 900;
+
+    // subtle wobble LFO to amplitude
+    const lfo = audioCtx.createOscillator();
+    lfo.type = 'sine';
+    lfo.frequency.value = 0.07; // slow
+    const lfoGain = audioCtx.createGain();
+    lfoGain.gain.value = 0.18;
+    lfo.connect(lfoGain);
+    lfoGain.connect(droneGain.gain);
+
+    droneOsc.connect(droneGain);
+    droneDetune.connect(droneGain);
+    droneGain.connect(lowpass);
+    lowpass.connect(masterGain);
+
+    droneOsc.start();
+    droneDetune.start();
+    lfo.start();
+
+    // store refs so we can stop later
+    droneOsc._lfo = lfo;
+    droneOsc._gainNode = droneGain;
+  }
+
+  // noise burst (short metallic)
+  function triggerNoiseBurst(){
+    if(!audioCtx) return;
+    const bufferSize = audioCtx.sampleRate * 1.0;
+    const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+    const data = noiseBuffer.getChannelData(0);
+    for(let i=0;i<bufferSize;i++){
+      data[i] = (Math.random()*2 - 1) * (Math.exp(-i/(audioCtx.sampleRate*0.08))); // decaying noise
+    }
+    const src = audioCtx.createBufferSource();
+    src.buffer = noiseBuffer;
+    // bandpass to make it eerie
+    const band = audioCtx.createBiquadFilter();
+    band.type = 'bandpass';
+    band.frequency.value = 820 + Math.random()*600;
+    band.Q.value = 0.9 + Math.random()*2;
+    // short gain envelope
+    const g = audioCtx.createGain();
+    g.gain.value = 0.0;
+    src.connect(band);
+    band.connect(g);
+    g.connect(masterGain);
+    const now = audioCtx.currentTime;
+    g.gain.cancelScheduledValues(now);
+    g.gain.setValueAtTime(0.0, now);
+    g.gain.linearRampToValueAtTime(0.7, now + 0.01);
+    g.gain.exponentialRampToValueAtTime(0.0001, now + 0.6 + Math.random()*0.8);
+    src.start();
+    src.stop(now + 1.2 + Math.random()*0.5);
+  }
+
+  // occasional stinger : low rising pitch impact
+  function triggerStinger(){
+    if(!audioCtx) return;
+    const osc = audioCtx.createOscillator();
+    osc.type = 'triangle';
+    const g = audioCtx.createGain();
+    g.gain.value = 0.0;
+    osc.connect(g);
+    g.connect(masterGain);
+    const now = audioCtx.currentTime;
+    osc.frequency.setValueAtTime(40 + Math.random()*10, now);
+    osc.frequency.exponentialRampToValueAtTime(600 + Math.random()*300, now + 0.5 + Math.random()*0.6);
+    g.gain.setValueAtTime(0.0, now);
+    g.gain.linearRampToValueAtTime(0.6, now + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001, now + 1.6 + Math.random()*0.8);
+    osc.start(now);
+    osc.stop(now + 2.0 + Math.random()*0.8);
+  }
+
+  function scheduleNoiseAndStingers(){
+    // clear existing timers
+    if(noiseTimer) clearInterval(noiseTimer);
+    if(stingerTimer) clearInterval(stingerTimer);
+    // random intervals for noise
+    noiseTimer = setInterval(()=>{
+      if(isPlaying && !isMuted) {
+        // sometimes burst 1..3 times quickly
+        const count = Math.random() > 0.8 ? 2 + Math.floor(Math.random()*3) : 1;
+        for(let i=0;i<count;i++){
+          setTimeout(triggerNoiseBurst, i*80 + Math.random()*180);
+        }
+      }
+    }, 2500 + Math.random()*3000);
+
+    // stingers spaced further apart
+    stingerTimer = setInterval(()=>{
+      if(isPlaying && !isMuted){
+        triggerStinger();
+        // small chance to also trigger a visual shake
+        if(Math.random() > 0.65) doShake();
+      }
+    }, 5000 + Math.random()*8000);
+  }
+
+  function startAudio(){
+    if(isPlaying) return;
+    ensureAudio();
+    // resume if suspended due to autoplay rules
+    if(audioCtx.state === 'suspended') audioCtx.resume();
+    startDrone();
+    scheduleNoiseAndStingers();
+    isPlaying = true;
+    playBtn.disabled = true;
+    pauseBtn.disabled = false;
+  }
+
+  function stopAudio(){
+    if(!audioCtx) return;
+    // stop drone oscillators gently
+    try {
+      if(droneOsc){
+        const now = audioCtx.currentTime;
+        droneOsc._gainNode.gain.cancelScheduledValues(now);
+        droneOsc._gainNode.gain.exponentialRampToValueAtTime(0.0001, now + 1.2);
+        setTimeout(()=> {
+          try { droneOsc.stop(); droneDetune.stop(); droneOsc._lfo.stop(); } catch(e){}
+          droneOsc = null; droneDetune = null;
+        }, 1400);
+      }
+    } catch(e){}
+    if(noiseTimer) { clearInterval(noiseTimer); noiseTimer = null; }
+    if(stingerTimer) { clearInterval(stingerTimer); stingerTimer = null; }
+    isPlaying = false;
+    playBtn.disabled = false;
+    pauseBtn.disabled = true;
+  }
+
+  // volume and mute
+  volRange.addEventListener('input', (e)=>{
+    const v = parseFloat(e.target.value);
+    if(masterGain) masterGain.gain.setTargetAtTime(v, audioCtx ? audioCtx.currentTime : 0, 0.02);
+  });
+  muteBtn.addEventListener('click', ()=>{
+    isMuted = !isMuted;
+    muteBtn.textContent = isMuted ? 'Unmute' : 'Mute';
+    if(masterGain) masterGain.gain.setTargetAtTime(isMuted ? 0.0001 : parseFloat(volRange.value), audioCtx.currentTime, 0.02);
+  });
+
+  playBtn.addEventListener('click', ()=>{
+    // many browsers block AudioContext until user gesture; using click is fine.
+    startAudio();
+    // small visual cue on play
+    document.getElementById('chronoContainer').classList.add('terrorPulse');
+  });
+
+  pauseBtn.addEventListener('click', ()=>{
+    stopAudio();
+    document.getElementById('chronoContainer').classList.remove('terrorPulse');
+  });
+
+  // when audio stops (page hide) we should stop to save resources
+  window.addEventListener('visibilitychange', ()=> {
+    if(document.hidden) { /* optional: reduce load */ }
+  });
+
+  /**********************
+   * Visual terror controls
+   **********************/
+  document.getElementById('togglePulse').addEventListener('click', ()=>{
+    const c = document.getElementById('chronoContainer');
+    if(c.classList.contains('terrorPulse')) c.classList.remove('terrorPulse'); else c.classList.add('terrorPulse');
+  });
+
+  function doShake(){
+    const rp = document.getElementById('rightPanel');
+    rp.classList.add('shake');
+    setTimeout(()=> rp.classList.remove('shake'), 450);
+  }
+  document.getElementById('triggerShake').addEventListener('click', doShake);
+
+  /**********************
+   * Small safety: on first user gesture ensure resume audio context
+   **********************/
+  function ensureAudioOnFirstGesture(){
+    // call once on any click to guarantee audio can start later
+    document.body.removeEventListener('click', ensureAudioOnFirstGesture);
+    try {
+      ensureAudio();
+    } catch(e){}
+  }
+  document.body.addEventListener('click', ensureAudioOnFirstGesture, {once:true});
+
+  // preload sample birthdate without auto-run
   (function preloadSample(){
     const now = new Date();
     const sYYYY = now.getFullYear() - 25;
@@ -505,6 +631,7 @@
     setTimeout(resizeCanvas, 60);
     setTimeout(resizeCanvas, 300);
   });
+
   </script>
 </body>
 </html>
