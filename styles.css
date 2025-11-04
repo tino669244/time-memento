@@ -6,7 +6,7 @@
   align-items:center;
   justify-content:center;
   overflow:hidden;
-  background:#100000; /* dark red base */
+  background:#100000;
 }
 
 /* Zombie GIF background */
@@ -40,8 +40,8 @@
 }
 #chrono{
   margin:0;
-  font-size:72px; /* lehibe afovoany */
-  color:#ff1a1a; /* menamena mafy */
+  font-size:72px;
+  color:#ff1a1a;
   text-shadow:0 0 28px rgba(255,60,60,0.38);
 }
 .chrono-sub{
@@ -54,7 +54,7 @@
 .robot-info{
   position:absolute;
   top:12px;
-  left:12px; /* ilany havia */
+  left:12px;
   z-index:30;
   display:flex;
   flex-direction:column;
@@ -62,7 +62,7 @@
   gap:4px;
 }
 .robot-img{
-  width:3cm; /* kely 3cm x 3cm */
+  width:3cm;
   height:3cm;
   object-fit:contain;
 }
@@ -92,7 +92,7 @@
   justify-content:flex-start;
   padding:12px 24px;
   overflow:hidden;
-  background:#100000; /* same dark base */
+  background:#100000;
 }
 #visualCanvas{
   width:100%;
