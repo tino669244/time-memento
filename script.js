@@ -1,33 +1,83 @@
-function updateCountdownOnce(){
-  if(!targetDate) return;
-  const now = Date.now();
-  const diff = targetDate.getTime() - now;
+/* -----------------------------
+   Audio-reactive terror canvas
+------------------------------ */
+const canvas = document.getElementById("graffitiCanvas");
+const ctx = canvas.getContext("2d");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight * 0.7;
 
-  const birthStr = document.getElementById('birthdate').value;
-  const birth = new Date(birthStr + 'T00:00:00');
-  const totalLifeMs = targetDate - birth;
+const audio = document.getElementById("audio");
+const fileInput = document.getElementById("audioFile");
+const playBtn = document.getElementById("playBtn");
 
-  if(diff <= 0){
-    document.getElementById('chrono').textContent = "💀 00:00:00";
-    document.getElementById('progressFill').style.width = '0%';
-    document.getElementById('progressPct').textContent = '0%';
-    document.getElementById('result').textContent = "💀 Temps écoulé.";
-    return;
+let audioCtx, analyser, source, dataArray, bufferLength;
+let isPlaying = false;
+
+fileInput.addEventListener("change", function(e) {
+  const file = e.target.files[0];
+  if (file) {
+    const url = URL.createObjectURL(file);
+    audio.src = url;
   }
+});
 
-  // Chrono tokana = “HH:MM:SS” (rehefa latsaka andro)
-  const totalSec = Math.floor(diff / 1000);
-  const h = Math.floor(totalSec / 3600);
-  const m = Math.floor((totalSec % 3600) / 60);
-  const s = totalSec % 60;
-  const chronoText = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-  document.getElementById('chrono').textContent = chronoText;
+playBtn.addEventListener("click", () => {
+  if (!audioCtx) setupAudio();
+  if (isPlaying) {
+    audio.pause();
+    playBtn.textContent = "▶ Jouer";
+  } else {
+    audio.play();
+    playBtn.textContent = "⏸ Pause";
+  }
+  isPlaying = !isPlaying;
+});
 
-  // progress %
-  if(!isNaN(totalLifeMs) && totalLifeMs > 0){
-    const elapsed = now - birth.getTime();
-    let pct = Math.max(0, Math.min(100, ((totalLifeMs - elapsed) / totalLifeMs) * 100));
-    document.getElementById('progressFill').style.width = `${pct}%`;
-    document.getElementById('progressPct').textContent = `${Math.round(pct)}%`;
+function setupAudio() {
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  analyser = audioCtx.createAnalyser();
+  source = audioCtx.createMediaElementSource(audio);
+  source.connect(analyser);
+  analyser.connect(audioCtx.destination);
+  analyser.fftSize = 256;
+
+  bufferLength = analyser.frequencyBinCount;
+  dataArray = new Uint8Array(bufferLength);
+  animate();
+}
+
+function animate() {
+  requestAnimationFrame(animate);
+  analyser.getByteFrequencyData(dataArray);
+
+  ctx.fillStyle = "rgba(0,0,0,0.2)";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  const barWidth = (canvas.width / bufferLength) * 1.5;
+  let x = 0;
+
+  for (let i = 0; i < bufferLength; i++) {
+    const barHeight = dataArray[i] * 1.5;
+    const r = barHeight + 25 * (i / bufferLength);
+    const g = 0;
+    const b = 0;
+
+    ctx.fillStyle = `rgb(${r},${g},${b})`;
+    ctx.shadowColor = `rgba(255,0,0,0.8)`;
+    ctx.shadowBlur = 20;
+    ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
+
+    x += barWidth + 1;
   }
 }
+
+/* Little terror glitch every few seconds */
+setInterval(() => {
+  document.body.style.filter = "contrast(150%) hue-rotate(10deg)";
+  setTimeout(() => (document.body.style.filter = "none"), 100);
+}, 2000);
+
+window.addEventListener("resize", () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight * 0.7;
+});
