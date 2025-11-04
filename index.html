@@ -1,21 +1,510 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Ruine Time — Graffiti + Chrono (single)</title>
+  <style>
+    :root{
+      --bg-dark:#0b0b0d;
+      --panel-white:#ffffff;
+      --accent:#ff3030;
+      --muted:rgba(255,255,255,0.14);
+    }
+    html,body{
+      height:100%;
+      margin:0;
+      padding:0;
+      font-family: Inter, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg-dark);
+      color:#eee;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      overflow:hidden;
+    }
+
+    /* main split */
+    #mainWrapper{
+      display:flex;
+      width:100vw;
+      height:100vh;
+    }
+
+    /* left white panel */
+    #leftPanel{
+      width:45%;
+      min-width:320px;
+      background: var(--panel-white);
+      color:#111;
+      display:flex;
+      flex-direction:column;
+      padding:36px;
+      box-sizing:border-box;
+      gap:18px;
+      overflow:auto;
+    }
+    #leftPanel h1{
+      margin:0;
+      font-size:28px;
+      letter-spacing:-0.5px;
+    }
+    #leftPanel p{
+      margin:0;
+      color:#444;
+    }
+    .metaCard{
+      background:#f7f7f8;
+      padding:14px;
+      border-radius:10px;
+      box-shadow: 0 6px 18px rgba(15,15,15,0.04);
+    }
+    .controlsRow{
+      display:flex;
+      gap:8px;
+      align-items:center;
+    }
+    input[type="date"]{
+      padding:8px 10px;
+      border-radius:8px;
+      border:1px solid #ddd;
+      background:white;
+    }
+    button.btn{
+      padding:8px 12px;
+      border-radius:8px;
+      border:0;
+      cursor:pointer;
+      background:var(--accent);
+      color:white;
+      font-weight:600;
+    }
+    button.ghost{
+      background:transparent;
+      color:#444;
+      border:1px solid #ddd;
+    }
+
+    /* right panel with canvas */
+    #rightPanel{
+      width:55%;
+      position:relative;
+      overflow:hidden;
+      background: linear-gradient(180deg, rgba(8,8,8,1) 0%, rgba(12,12,12,1) 100%);
+      display:flex;
+      align-items:stretch;
+      justify-content:stretch;
+    }
+
+    /* canvas covers rightPanel */
+    #graffitiCanvas{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      display:block;
+      z-index:0;
+      background: radial-gradient(ellipse at center, rgba(255,255,255,0.02), transparent 20%);
+    }
+
+    /* chrono container sits above canvas */
+    #chronoContainer{
+      position:absolute;
+      right:8%;
+      bottom:8%;
+      width:420px;
+      max-width:80%;
+      z-index:10;
+      background: linear-gradient(180deg, rgba(0,0,0,0.46), rgba(8,8,8,0.64));
+      border-radius:14px;
+      padding:22px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+      text-align:center;
+      color:#fff;
+      backdrop-filter: blur(6px);
+      border:1px solid rgba(255,255,255,0.04);
+    }
+
+    #chrono{
+      font-size:48px;
+      font-weight:800;
+      letter-spacing:1px;
+      color:var(--accent);
+      text-shadow: 0 0 18px rgba(255,48,48,0.18);
+      margin-bottom:8px;
+    }
+    #result{
+      font-size:14px;
+      color:#ddd;
+      margin-bottom:10px;
+    }
+
+    #progressBar{
+      width:100%;
+      height:12px;
+      background:rgba(255,255,255,0.06);
+      border-radius:999px;
+      overflow:hidden;
+      margin:8px 0 6px;
+    }
+    #progressFill{
+      width:0%;
+      height:100%;
+      background: linear-gradient(90deg, #ff3b3b, #ff9a9a);
+      transition: width 300ms linear;
+    }
+    #progressPct{
+      font-size:12px;
+      color:#ccc;
+    }
+
+    /* small overlay UI in top-right for quick actions */
+    #overlayControls{
+      position:absolute;
+      top:18px;
+      right:18px;
+      z-index:11;
+      display:flex;
+      gap:10px;
+    }
+    .smallBtn{
+      padding:8px 10px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,0.06);
+      background:rgba(0,0,0,0.28);
+      color:#fff;
+      cursor:pointer;
+      font-weight:600;
+    }
+
+    /* responsive */
+    @media (max-width:900px){
+      #leftPanel{ display:none; }
+      #rightPanel{ width:100%; }
+      #chronoContainer{ left:50%; right:auto; transform:translateX(-50%); width:86%; bottom:6%; }
+    }
+  </style>
+</head>
 <body>
   <div id="mainWrapper">
-    <div id="leftPanel"></div>
-    <div id="rightPanel">
-      <canvas id="graffitiCanvas"></canvas>
+    <aside id="leftPanel" aria-label="Left panel">
+      <h1>Ruine Time</h1>
+      <p>Ampifanaraho: ilany havia (blanc) & ilany havanana (graffiti canvas + chrono tokana)</p>
 
-      <div id="chronoContainer">
-        <div id="chrono"></div>
-        <div id="result"></div>
-        <div id="progressBar">
-          <div id="progressFill"></div>
+      <div class="metaCard">
+        <strong>Fampiasa</strong>
+        <p style="margin-top:8px">Ampidiro ny daty teraka (YYYY-MM-DD) ary tsindrio <em>Predict</em>. Ity fampiharana ity dia simulation fotsiny — mitazona fitondran-tena etika: tsy mpitsabo ary tsy vinavina siantifika.</p>
+      </div>
+
+      <div class="metaCard">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div><strong>Controls</strong></div>
+          <div style="font-size:12px;color:#666">Demo</div>
         </div>
 
-        <input type="date" id="birthdate">
-        <button id="goBtn">Predict</button>
-        <button id="randomBtn">Random</button>
-        <div id="progressPct"></div>
+        <div style="margin-top:12px" class="controlsRow">
+          <input type="date" id="birthdate" aria-label="Birth date">
+          <button class="btn" id="goBtn">Predict</button>
+          <button class="ghost" id="randomBtn">Random</button>
+        </div>
+
+        <div style="margin-top:12px;display:flex;gap:8px;">
+          <button class="ghost" id="clearBtn">Clear</button>
+          <button class="ghost" id="reseedBtn">Reseed Tags</button>
+        </div>
+
+        <div style="margin-top:12px;font-size:13px;color:#666">Sample preview ny daty sy procent progress dia hiseho eo amin'ny ilany havanana.</div>
       </div>
-    </div>
+
+      <div class="metaCard">
+        <strong>Notes</strong>
+        <ul style="margin:8px 0 0 18px;color:#666">
+          <li>Deterministic hash ampiasaina amin'ny daty teraka</li>
+          <li>Random mode tsy deterministic</li>
+          <li>Aza ampiasaina ho fanapahan-kevitra manan-danja ara-pahasalamana</li>
+        </ul>
+      </div>
+
+      <footer style="margin-top:auto;color:#999;font-size:12px">© Ruine Time — Demo</footer>
+    </aside>
+
+    <main id="rightPanel" aria-label="Right panel">
+      <canvas id="graffitiCanvas"></canvas>
+
+      <div id="overlayControls" aria-hidden="true">
+        <button class="smallBtn" id="toggleGlow">Glow</button>
+        <button class="smallBtn" id="toggleMotion">Motion</button>
+      </div>
+
+      <div id="chronoContainer" role="region" aria-label="Countdown">
+        <div id="chrono">--:--:--</div>
+        <div id="result">Aucun résultat</div>
+
+        <div id="progressBar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+          <div id="progressFill"></div>
+        </div>
+        <div id="progressPct">--%</div>
+      </div>
+    </main>
   </div>
+
+  <script>
+  /*******************************
+   * Graffiti canvas (modified)
+   *******************************/
+  const canvas = document.getElementById('graffitiCanvas');
+  const ctx = canvas.getContext('2d');
+
+  function resizeCanvas(){
+    // use devicePixelRatio for crispness
+    const dpr = Math.max(1, window.devicePixelRatio || 1);
+    canvas.width = Math.floor(canvas.clientWidth * dpr);
+    canvas.height = Math.floor(canvas.clientHeight * dpr);
+    canvas.style.width = canvas.clientWidth + "px";
+    canvas.style.height = canvas.clientHeight + "px";
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+  }
+  window.addEventListener('resize', resizeCanvas);
+  // ensure initial size after page layout
+  requestAnimationFrame(resizeCanvas);
+
+  const G_TAGS = ["💀","🔥","☠️","⏳","⚡","✞","☩","RUINE","TIME","⟡"];
+  let particles = [];
+  let enableMotion = true;
+  let enableGlow = true;
+
+  class Tag {
+    constructor(x,y,txt){
+      this.x = x; this.y = y; this.txt = txt;
+      this.size = 18 + Math.random()*46;
+      this.vx = (Math.random()-0.5)*1.6;
+      this.vy = (Math.random()-0.5)*1.6;
+      this.rot = (Math.random()-0.5)*0.4;
+      this.alpha = 0.28 + Math.random()*0.6;
+      this.base = {x, y};
+    }
+    update(){
+      if(enableMotion){
+        this.x += this.vx; this.y += this.vy;
+        this.rot += (Math.random()-0.5)*0.02;
+        if(this.x < -50 || this.x > canvas.clientWidth + 50) this.vx *= -1;
+        if(this.y < -50 || this.y > canvas.clientHeight + 50) this.vy *= -1;
+      } else {
+        // subtle pulse around base
+        this.x = this.base.x + Math.sin(Date.now()/2000 + this.size)*6;
+        this.y = this.base.y + Math.cos(Date.now()/2000 + this.size)*6;
+      }
+    }
+    draw(){
+      ctx.save();
+      ctx.translate(this.x, this.y);
+      ctx.rotate(this.rot);
+      ctx.globalAlpha = this.alpha;
+      ctx.font = `${this.size}px "Impact", "Arial Black", sans-serif`;
+      // shadow / glow
+      if(enableGlow){
+        ctx.shadowColor = "rgba(255,60,60,0.25)";
+        ctx.shadowBlur = Math.min(30, this.size * 0.6);
+      } else {
+        ctx.shadowBlur = 0;
+      }
+      // stroke + fill
+      ctx.fillStyle = `rgba(255,30,30,${0.9*this.alpha})`;
+      ctx.strokeStyle = `rgba(0,0,0,${0.6*this.alpha})`;
+      ctx.lineWidth = Math.max(2, this.size*0.06);
+      ctx.miterLimit = 2;
+      ctx.strokeText(this.txt, 0, 0);
+      ctx.fillText(this.txt, 0, 0);
+      ctx.restore();
+    }
+  }
+
+  function initTags(count=30){
+    particles = [];
+    for(let i=0;i<count;i++){
+      const x = Math.random()*canvas.clientWidth;
+      const y = Math.random()*canvas.clientHeight;
+      const t = G_TAGS[Math.floor(Math.random()*G_TAGS.length)];
+      particles.push(new Tag(x,y,t));
+    }
+  }
+  initTags(36);
+
+  function clearCanvasBg(){
+    // slightly translucent clear to preserve motion feel
+    ctx.fillStyle = 'rgba(6,6,6,0.12)';
+    ctx.fillRect(0,0,canvas.clientWidth, canvas.clientHeight);
+  }
+
+  function animate(){
+    // custom clear (gives trailing feel)
+    ctx.clearRect(0,0,canvas.clientWidth, canvas.clientHeight);
+    // faint vignette
+    const grad = ctx.createRadialGradient(canvas.clientWidth/2, canvas.clientHeight/2, canvas.clientWidth*0.05, canvas.clientWidth/2, canvas.clientHeight/2, Math.max(canvas.clientWidth, canvas.clientHeight)/1.2);
+    grad.addColorStop(0, 'rgba(255,255,255,0.02)');
+    grad.addColorStop(1, 'rgba(0,0,0,0.12)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0,0,canvas.clientWidth, canvas.clientHeight);
+
+    // draw tags
+    particles.forEach(p => { p.update(); p.draw(); });
+    requestAnimationFrame(animate);
+  }
+  requestAnimationFrame(animate);
+
+  /*******************************
+   * Deterministic death-date generator
+   *******************************/
+  function hashCode(str){
+    let h = 2166136261 >>> 0;
+    for(let i=0;i<str.length;i++){
+      h ^= str.charCodeAt(i);
+      h = Math.imul(h, 16777619) >>> 0;
+    }
+    return h;
+  }
+
+  function daysOffsetFromBirthString(birthStr){
+    const seed = hashCode(birthStr);
+    const maxDays = 365000; // ~1000 years
+    const offset = (seed % maxDays) + 1;
+    return offset;
+  }
+
+  /*******************************
+   * Countdown (single chrono)
+   *******************************/
+  const goBtn = document.getElementById('goBtn');
+  const randomBtn = document.getElementById('randomBtn');
+  const clearBtn = document.getElementById('clearBtn');
+  const reseedBtn = document.getElementById('reseedBtn');
+  const chronoEl = document.getElementById('chrono');
+  const resultEl = document.getElementById('result');
+  const progressFill = document.getElementById('progressFill');
+  const progressPct = document.getElementById('progressPct');
+
+  let targetDate = null;
+  let countdownTimer = null;
+
+  function setTargetFromBirthString(birthStr){
+    const birth = new Date(birthStr + 'T00:00:00');
+    if(isNaN(birth)) return false;
+    const offsetDays = daysOffsetFromBirthString(birthStr);
+    const t = new Date(birth.getTime() + offsetDays * 24*60*60*1000);
+    targetDate = t;
+    const opts = { year:'numeric', month:'long', day:'numeric' };
+    resultEl.textContent = `Date prédite : ${t.toLocaleDateString(undefined, opts)}  (offset ${offsetDays} j)`;
+    startCountdownLoop(birth);
+    return true;
+  }
+
+  function setTargetRandomNow(){
+    const today = new Date();
+    const seed = Math.floor(Math.random()*1000000);
+    const offsetDays = (seed % 365000) + 1;
+    targetDate = new Date(today.getTime() + offsetDays * 24*60*60*1000);
+    resultEl.textContent = `Date prédite (random) : ${targetDate.toLocaleDateString()} (offset ${offsetDays} j)`;
+    startCountdownLoop(today);
+  }
+
+  function updateCountdownOnce(birthDateForTotal){
+    if(!targetDate) return;
+    const now = Date.now();
+    const diff = targetDate.getTime() - now;
+
+    if(diff <= 0){
+      chronoEl.textContent = "💀 00:00:00";
+      progressFill.style.width = '0%';
+      progressPct.textContent = '0%';
+      resultEl.textContent = "💀 Temps écoulé.";
+      return;
+    }
+
+    // show as HHH:MM:SS (hours might be >24 if many days left)
+    const totalSec = Math.floor(diff / 1000);
+    const hours = Math.floor(totalSec / 3600);
+    const mins = Math.floor((totalSec % 3600) / 60);
+    const secs = totalSec % 60;
+    const chronoText = `${String(hours).padStart(2,'0')}:${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+    chronoEl.textContent = chronoText;
+
+    // progress%
+    if(birthDateForTotal && !isNaN(birthDateForTotal.getTime())){
+      const totalLifeMs = targetDate.getTime() - birthDateForTotal.getTime();
+      if(totalLifeMs > 0){
+        const elapsed = now - birthDateForTotal.getTime();
+        let pct = Math.max(0, Math.min(100, ((totalLifeMs - elapsed) / totalLifeMs) * 100));
+        progressFill.style.width = `${pct}%`;
+        progressPct.textContent = `${Math.round(pct)}%`;
+      } else {
+        progressFill.style.width = '0%';
+        progressPct.textContent = '--%';
+      }
+    } else {
+      progressFill.style.width = '0%';
+      progressPct.textContent = '--%';
+    }
+  }
+
+  function startCountdownLoop(birthForTotal){
+    if(countdownTimer) clearInterval(countdownTimer);
+    updateCountdownOnce(birthForTotal);
+    // every 1s is enough for single chrono
+    countdownTimer = setInterval(()=> updateCountdownOnce(birthForTotal), 1000);
+  }
+
+  goBtn.addEventListener('click', ()=> {
+    const birthVal = document.getElementById('birthdate').value;
+    if(!birthVal){
+      alert('Veuillez entrer une date (YYYY-MM-DD).');
+      return;
+    }
+    const ok = setTargetFromBirthString(birthVal);
+    if(!ok) alert('Date invalide.');
+  });
+
+  randomBtn.addEventListener('click', ()=> {
+    setTargetRandomNow();
+  });
+
+  clearBtn.addEventListener('click', ()=> {
+    targetDate = null;
+    if(countdownTimer) clearInterval(countdownTimer);
+    chronoEl.textContent = '--:--:--';
+    resultEl.textContent = 'Aucun résultat';
+    progressFill.style.width = '0%';
+    progressPct.textContent = '--%';
+  });
+
+  reseedBtn.addEventListener('click', ()=> {
+    initTags(36);
+  });
+
+  // overlay toggles
+  document.getElementById('toggleGlow').addEventListener('click', ()=>{
+    enableGlow = !enableGlow;
+    document.getElementById('toggleGlow').textContent = enableGlow ? 'Glow' : 'No Glow';
+  });
+  document.getElementById('toggleMotion').addEventListener('click', ()=>{
+    enableMotion = !enableMotion;
+    document.getElementById('toggleMotion').textContent = enableMotion ? 'Motion' : 'Still';
+  });
+
+  /* optional: preload sample birthdate (25 years ago), don't auto-run prediction */
+  (function preloadSample(){
+    const now = new Date();
+    const sYYYY = now.getFullYear() - 25;
+    const mm = String(now.getMonth()+1).padStart(2,'0');
+    const dd = String(now.getDate()).padStart(2,'0');
+    const sample = `${sYYYY}-${mm}-${dd}`;
+    const el = document.getElementById('birthdate');
+    if(el) el.value = sample;
+  })();
+
+  // ensure canvas initial resize after fonts/layout settled
+  window.addEventListener('load', ()=> {
+    setTimeout(resizeCanvas, 60);
+    setTimeout(resizeCanvas, 300);
+  });
+  </script>
 </body>
+</html>
