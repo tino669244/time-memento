@@ -1,13 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Share+Tech+Mono&display=swap');
-
-*{box-sizing:border-box;}
-html,body{height:100%;margin:0;background:#000;color:#e9e9e9;font-family:'Share Tech Mono', monospace;overflow:hidden;}
-.navbar{position:fixed;top:0;width:100%;background:rgba(8,8,8,0.7);backdrop-filter:blur(8px);display:flex;justify-content:space-between;align-items:center;padding:10px 28px;z-index:50;border-bottom:1px solid rgba(255,0,0,0.03)}
-.logo{color:#ff3b3b;font-family:'Orbitron',sans-serif;font-weight:700}
-.nav-links{list-style:none;display:flex;gap:18px;margin:0;padding:0}
-.nav-links a{color:#ddd;text-decoration:none;padding:6px 10px;border-radius:6px}
-.nav-links a:hover{background:rgba(255,255,255,0.02);color:#fff}
-
 /* ---------------- Top Section ---------------- */
 #top-section{
   height:55vh;
@@ -22,41 +12,42 @@ html,body{height:100%;margin:0;background:#000;color:#e9e9e9;font-family:'Share 
 /* Zombie GIF background */
 #threeContainer{
   position:absolute;
-  inset:56px 2% auto 2%;
-  height:calc(55vh - 80px);
+  inset:0;
+  height:100%;
+  width:100%;
   border-radius:12px;
   overflow:hidden;
-  z-index:10;
+  z-index:5;
   box-shadow:0 30px 120px rgba(255,0,0,0.6);
   border:1px solid rgba(255,80,80,0.1);
   background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.6)),
               url('zombie.gif') center center / cover no-repeat;
 }
 
-/* Chrono overlay centered */
+/* Chrono overlay centered (BIG) */
 .chrono-overlay{
   position:absolute;
-  top:10%;
+  top:50%;
   left:50%;
-  transform:translateX(-50%);
+  transform:translate(-50%,-50%);
   z-index:30;
   background:rgba(0,0,0,0.55);
-  padding:14px 20px;
-  border-radius:12px;
+  padding:24px 40px;
+  border-radius:16px;
   border:1px solid rgba(255,255,255,0.05);
   backdrop-filter:blur(4px);
   text-align:center;
 }
 #chrono{
   margin:0;
-  font-size:44px;
+  font-size:72px; /* lehibe afovoany */
   color:#ff1a1a; /* menamena mafy */
-  text-shadow:0 0 18px rgba(255,60,60,0.28);
+  text-shadow:0 0 28px rgba(255,60,60,0.38);
 }
 .chrono-sub{
-  margin:2px 0 0;
+  margin:4px 0 0;
   color:#ff9999;
-  font-size:13px;
+  font-size:18px;
 }
 
 /* Robot kely havia ambony */
@@ -137,28 +128,4 @@ button:hover{
   display:flex;
   gap:8px;
   align-items:center;
-}
-
-/* Pages overlay */
-.page{
-  display:none;
-  position:fixed;
-  top:56px;
-  left:0;
-  width:100%;
-  height:calc(100% - 56px);
-  align-items:center;
-  justify-content:center;
-  background:rgba(0,0,0,0.65);
-  backdrop-filter:blur(8px);
-  z-index:100;
-}
-.page.active{display:flex;}
-.page-text{
-  color:#ddd;
-  font-size:18px;
-  text-align:center;
-  padding:24px;
-  border-radius:8px;
-  text-shadow:0 0 8px rgba(255,0,0,0.06);
 }
