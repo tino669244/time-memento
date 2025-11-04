@@ -7,26 +7,47 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <!-- Navigation -->
   <nav class="navbar">
     <div class="logo">☠ Ruine Time ☠</div>
     <ul class="nav-links">
-      <li><a href="#">Accueil</a></li>
-      <li><a href="#">Mémoires</a></li>
-      <li><a href="#">À propos</a></li>
+      <li><a href="#home">Accueil</a></li>
+      <li><a href="#memoires">Mémoires</a></li>
+      <li><a href="#apropos">À propos</a></li>
     </ul>
   </nav>
 
-  <main>
+  <!-- Haut : Chrono -->
+  <section id="top-section">
+    <div class="chrono-container">
+      <h1 id="chrono">00:00:00</h1>
+      <p class="chrono-sub">Le temps s'effrite...</p>
+    </div>
+  </section>
+
+  <!-- Bas : Audio visualizer -->
+  <section id="bottom-section">
     <canvas id="graffitiCanvas"></canvas>
     <div class="audio-controls">
       <input type="file" id="audioFile" accept="audio/*">
       <button id="playBtn">▶ Jouer</button>
     </div>
-    <p class="subtitle">Un écho dans la nuit... <span class="blinking">_</span></p>
-  </main>
+  </section>
+
+  <!-- Pages internes -->
+  <section id="home" class="page active">
+    <p class="page-text">Bienvenue dans les ruines du temps...</p>
+  </section>
+
+  <section id="memoires" class="page">
+    <p class="page-text">Les souvenirs s’effacent lentement.</p>
+  </section>
+
+  <section id="apropos" class="page">
+    <p class="page-text">Créé par Tino — l’ombre veille toujours.</p>
+  </section>
 
   <audio id="audio" crossorigin="anonymous"></audio>
-
   <script src="script.js"></script>
 </body>
 </html>
