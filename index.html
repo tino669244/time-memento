@@ -1,40 +1,60 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ruine Time - Chronomètre de Vie</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Ruine Time — Infernal Audio Life Timer</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div id="upper-section">
-    <img src="zombie3d.png" id="zombie" alt="Zombie 3D" />
-    <div id="chrono-container">
-      <h1>⏳ Chronomètre de Vie ⏳</h1>
-      <div id="chrono">000d : 00h : 00m : 00s : 00</div>
-      <div id="progress"></div>
-      <p>Entrez votre date de naissance ci-dessous 👇</p>
-      <input type="date" id="birthdate" />
-      <div class="buttons">
-        <button id="predict">Prédire</button>
-        <button id="random">Aléatoire</button>
+  <!-- TOP: infernal canvas + poster + chrono + robot -->
+  <header id="top">
+    <canvas id="infernalCanvas" aria-hidden="true"></canvas>
+
+    <!-- zombie poster centered behind chrono -->
+    <img id="zombiePoster" src="zombie.gif" alt="zombie poster">
+
+    <!-- robot small left-top -->
+    <div class="robot-wrap">
+      <img id="robotImg" src="robot.gif" alt="robot">
+    </div>
+
+    <!-- Chrono big centered -->
+    <div class="chrono-wrap">
+      <div class="title-glow">Tino Andaina.js</div>
+      <div class="chrono-box">
+        <div id="chronoLarge">000d : 00h : 00m : 00s : 00</div>
+        <div id="chronoSub">Chronomètre de Vie</div>
+      </div>
+      <div id="progressBar"><div id="progressFill"></div></div>
+
+      <div class="birth-row">
+        <input id="birthdate" type="date" aria-label="Date de naissance">
+        <button id="predictBtn" class="btn">Predict</button>
+        <button id="randomBtn" class="btn ghost">Random</button>
+      </div>
+
+      <div id="result" class="muted">Aucun résultat</div>
+    </div>
+  </header>
+
+  <!-- BOTTOM: audio controls + visualizer -->
+  <main id="bottom">
+    <div class="audio-controls">
+      <input id="filePicker" type="file" accept="audio/*" />
+      <div class="controls-row">
+        <button id="playBtn" class="btn">▶ Play</button>
+        <button id="pauseBtn" class="btn ghost" disabled>⏸ Pause</button>
+        <button id="stopBtn" class="btn ghost" disabled>■ Stop</button>
+        <label class="vol">
+          Vol
+          <input id="volSlider" type="range" min="0" max="1" step="0.01" value="0.7">
+        </label>
       </div>
     </div>
-    <img src="robot.gif" id="robot" alt="Robot" />
-    <div id="datetime">
-      <div id="current-time"></div>
-      <div id="calendar"></div>
-    </div>
-  </div>
 
-  <div id="audio-section">
-    <h2>🔥 Instru Infernal 🔥</h2>
-    <audio id="music" controls>
-      <source src="audio/instru.mp3" type="audio/mpeg" />
-      Votre navigateur ne supporte pas l'audio.
-    </audio>
-    <canvas id="audioVisualizer"></canvas>
-  </div>
+    <canvas id="audioCanvas" aria-label="Audio visualizer"></canvas>
+  </main>
 
   <script src="script.js"></script>
 </body>
