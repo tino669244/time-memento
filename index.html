@@ -3,487 +3,54 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Tino Andaina — Horloge mécanique (real-time)</title>
-
-  <style>
-    /* ---------------- basic / reset ---------------- */
-    :root{
-      --bg-dark:#050405;
-      --accent:#ff2a2a;
-      --muted:#bdbdbd;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%;margin:0;background:var(--bg-dark);font-family:Inter, "Orbitron", system-ui, monospace;color:#fff;overflow:hidden}
-
-    /* -------------- top area (visual) -------------- */
-    .top {
-      position:relative;
-      height:60vh;
-      min-height:360px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      overflow:hidden;
-      background: linear-gradient(180deg, rgba(20,0,0,0.9), rgba(0,0,0,1));
-      border-bottom: 1px solid rgba(255,40,40,0.05);
-    }
-
-    /* infernal animated background canvas (behind everything) */
-    #bgCanvas {
-      position:absolute; inset:0; z-index:0; width:100%; height:100%;
-    }
-
-    /* horloge image (rotating slowly) */
-    #horlogeImg {
-      position:relative; z-index:10;
-      width:520px; max-width:86%;
-      filter: drop-shadow(0 20px 60px rgba(255,40,40,0.12)) contrast(120%) saturate(120%);
-      opacity:0.9;
-      transform-origin:50% 50%;
-      transition:transform 0.2s linear;
-      pointer-events:none;
-    }
-
-    /* canvas for hands sits exactly over image */
-    #handsCanvas {
-      position:absolute; z-index:20;
-      width:520px; max-width:86%;
-      height:auto;
-      pointer-events:none;
-    }
-
-    /* center block (chrono text) */
-    .center-block{
-      position:relative; z-index:30; text-align:center; pointer-events:none;
-    }
-    .title {
-      font-family:'Orbitron',sans-serif;
-      font-size:20px;color:var(--accent);
-      text-shadow:0 0 12px rgba(255,40,40,0.6);
-      margin-bottom:8px;
-    }
-    #digitalClock{
-      font-family:'Share Tech Mono', monospace;
-      font-size:56px; color:var(--accent);
-      text-shadow:0 0 26px rgba(255,60,60,0.34);
-      background: rgba(0,0,0,0.35);
-      padding:10px 20px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);
-      letter-spacing:1px;
-    }
-
-    /* small controls area under top */
-    .controls {
-      position:relative; z-index:40; margin-top:12px; text-align:center;
-    }
-    .controls input[type=date]{ padding:8px 10px;border-radius:8px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.03);color:#fff }
-    .controls .btn { padding:8px 12px;background:var(--accent);color:#111;border-radius:8px;border:0;margin-left:8px;cursor:pointer;font-weight:700 }
-
-    /* gears (top-right) small decorative */
-    .gears {
-      position:absolute; right:18px; top:14px; z-index:60; display:flex;flex-direction:column;gap:8px;
-      transform: translateZ(0);
-    }
-    .gear {
-      width:56px;height:56px; background: url('gears.png') center/contain no-repeat; filter:drop-shadow(0 8px 18px rgba(255,140,80,0.08));
-      opacity:0.95; transform-origin:center;
-    }
-
-    /* bottom area (audio etc) kept minimal here */
-    .bottom {
-      height:40vh; padding:18px; background: linear-gradient(180deg,#050000,#000);
-      display:flex;flex-direction:column;align-items:center;gap:12px; justify-content:flex-start;
-    }
-    .audio-row{ display:flex; gap:8px; align-items:center; }
-    .file-picker{ color:var(--muted); background:transparent;border:1px dashed rgba(255,255,255,0.04); padding:8px 10px;border-radius:8px }
-
-    /* responsive */
-    @media (max-width:900px){
-      #horlogeImg{ width:360px }
-      #handsCanvas{ width:360px }
-      #digitalClock{ font-size:32px }
-      .gear{ width:44px; height:44px }
-    }
-  </style>
+  <title>Ruine Time — Horloge & Audio</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-
-  <section class="top">
-    <!-- infernal background -->
+  <section id="top">
     <canvas id="bgCanvas" aria-hidden="true"></canvas>
 
-    <!-- decorative gears (images) - provide gears.png in root -->
     <div class="gears" aria-hidden="true">
-      <div class="gear" id="gearA" style="transform:rotate(0deg)"></div>
-      <div class="gear" id="gearB" style="transform:rotate(0deg)"></div>
-      <div class="gear" id="gearC" style="transform:rotate(0deg)"></div>
+      <div class="gear" id="gearA"></div>
+      <div class="gear" id="gearB"></div>
+      <div class="gear" id="gearC"></div>
     </div>
 
-    <!-- main horloge image (place horloge.png in root) -->
-    <img id="horlogeImg" src="horloge.png" alt="Horloge mécanique">
+    <div class="robot-wrap">
+      <img id="robotImg" src="robot.png" alt="robot">
+    </div>
 
-    <!-- canvas overlay for needles -->
+    <img id="horlogeImg" src="horloge.png" alt="horloge">
+
     <canvas id="handsCanvas" aria-hidden="true"></canvas>
 
-    <!-- center block shows digital time too -->
+    <img id="zombiePoster" src="zombie.png" alt="zombie">
+
     <div class="center-block">
       <div class="title">Tino Andaina.js</div>
       <div id="digitalClock">000d : 00h : 00m : 00s : 00</div>
+
       <div class="controls">
         <input id="birthdate" type="date" />
         <button id="predictBtn" class="btn">Predict</button>
-        <button id="randomBtn" class="btn" style="background:transparent;color:var(--muted);border:1px solid rgba(255,255,255,0.03)">Random</button>
+        <button id="randomBtn" class="btn ghost">Random</button>
       </div>
-      <div id="result" style="margin-top:8px;color:var(--muted);font-size:13px"></div>
+      <div id="result" class="muted"></div>
     </div>
   </section>
 
-  <section class="bottom">
-    <div class="audio-row">
-      <input id="filePicker" class="file-picker" type="file" accept="audio/*">
+  <section id="bottom">
+    <div class="audio-controls">
+      <input id="filePicker" type="file" accept="audio/*" class="file-picker" />
       <button id="playBtn" class="btn" disabled>Play</button>
       <button id="pauseBtn" class="btn" disabled>Pause</button>
-      <label style="color:var(--muted);margin-left:12px">Vol
-        <input id="vol" type="range" min="0" max="1" step="0.01" value="0.7" style="margin-left:6px">
+      <label class="volLabel">Vol
+        <input id="vol" type="range" min="0" max="1" step="0.01" value="0.7">
       </label>
     </div>
-    <canvas id="audioViz" style="width:100%;max-width:1200px;height:140px;border-radius:8px;background:radial-gradient(circle at 50% 30%, #200 0%, #000 100%);"></canvas>
+    <canvas id="audioViz"></canvas>
   </section>
 
-<script>
-/* =======================
-   Real-time mechanical clock overlay + background + audio-reactive
-   Requirements:
-   - horloge.png (same folder)
-   - gears.png (optional, small gear sprite)
-   - tick.mp3 (optional click sound)
-   ======================= */
-
-/* ------------- helpers ------------- */
-const clamp = (v,min,max)=> Math.max(min, Math.min(max, v));
-const $ = id => document.getElementById(id);
-
-/* ------------- bg infernal canvas ------------- */
-const bgCanvas = $('bgCanvas'), bgCtx = bgCanvas.getContext('2d');
-function resizeBG(){
-  bgCanvas.width = innerWidth;
-  bgCanvas.height = Math.max(innerHeight * 0.62, 360);
-}
-window.addEventListener('resize', ()=>{ resizeBG(); resizeHandsCanvas(); });
-resizeBG();
-
-let flameTime = 0;
-function drawInfernal(intensity = 0){
-  const w = bgCanvas.width, h = bgCanvas.height;
-  bgCtx.clearRect(0,0,w,h);
-
-  // radial glow
-  const grd = bgCtx.createRadialGradient(w/2, h*0.8, 40, w/2, h*0.3, Math.max(w,h));
-  grd.addColorStop(0, `rgba(255,140,40,${0.9*clamp(0.4 + intensity*0.6,0,1)})`);
-  grd.addColorStop(0.35, `rgba(255,50,50,${0.55*clamp(0.8 + intensity*0.8,0,1)})`);
-  grd.addColorStop(1, `rgba(0,0,0,0.95)`);
-  bgCtx.fillStyle = grd;
-  bgCtx.fillRect(0,0,w,h);
-
-  // layered sine flame shapes
-  const layers = 5;
-  for(let L=0; L<layers; L++){
-    bgCtx.beginPath();
-    const amp = 18 + L*12 + intensity*130;
-    const freq = 0.002 + L*0.0012;
-    const baseY = h*0.72 - L*10;
-    bgCtx.moveTo(0,h);
-    for(let x=0; x<=w; x+=8){
-      const n = Math.sin((x*freq) + (flameTime*0.014*(L+1))) * amp * Math.sin((flameTime*0.007)+L);
-      const y = baseY - Math.abs(n) - Math.pow((x - w/2)/(w/2), 4) * 120;
-      bgCtx.lineTo(x, y);
-    }
-    bgCtx.lineTo(w,h);
-    bgCtx.closePath();
-    bgCtx.fillStyle = `rgba(${200 + L*10}, ${40 + L*18}, 12, ${0.04 + (0.06*(layers-L)) + intensity*0.12})`;
-    bgCtx.fill();
-  }
-
-  // sparks
-  const sparks = Math.floor(4 + intensity*18);
-  for(let i=0;i<sparks;i++){
-    const sx = Math.random()*w;
-    const sy = h*0.6 + (Math.random()*h*0.25) * (1 - intensity*0.6);
-    const sr = 0.5 + Math.random()*2.2;
-    bgCtx.beginPath();
-    bgCtx.fillStyle = `rgba(255, ${120+Math.floor(Math.random()*120)}, 20, ${0.06 + Math.random()*0.2})`;
-    bgCtx.arc(sx, sy, sr, 0, Math.PI*2);
-    bgCtx.fill();
-  }
-
-  flameTime += 1;
-}
-
-/* ------------- horloge image rotation + hands canvas ------------- */
-const horlogeImg = $('horlogeImg');
-const handsCanvas = $('handsCanvas');
-const handsCtx = handsCanvas.getContext('2d');
-
-function resizeHandsCanvas(){
-  // match image CSS displayed size
-  const rect = horlogeImg.getBoundingClientRect();
-  handsCanvas.style.width = rect.width + 'px';
-  handsCanvas.style.height = rect.height + 'px';
-  handsCanvas.width = Math.floor(rect.width * devicePixelRatio);
-  handsCanvas.height = Math.floor(rect.height * devicePixelRatio);
-  handsCtx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
-}
-window.addEventListener('load', ()=>{ resizeHandsCanvas(); setTimeout(resizeHandsCanvas,200); });
-window.addEventListener('resize', ()=>{ resizeHandsCanvas(); });
-
-let lastTickSec = -1;
-function drawHands(){
-  if(!horlogeImg.complete) { requestAnimationFrame(drawHands); return; }
-  const rect = horlogeImg.getBoundingClientRect();
-  const w = handsCanvas.width / devicePixelRatio;
-  const h = handsCanvas.height / devicePixelRatio;
-  handsCtx.clearRect(0,0,w,h);
-
-  const cx = w/2, cy = h/2;
-  const radius = Math.min(w,h)/2 * 0.88;
-
-  // realtime
-  const now = new Date();
-  const hours = now.getHours() % 12;
-  const minutes = now.getMinutes();
-  const seconds = now.getSeconds();
-  const ms = now.getMilliseconds();
-
-  // angles
-  const secAngle = ((seconds + ms/1000) / 60) * Math.PI*2 - Math.PI/2;
-  const minAngle = ((minutes + seconds/60) / 60) * Math.PI*2 - Math.PI/2;
-  const hourAngle = ((hours + minutes/60) / 12) * Math.PI*2 - Math.PI/2;
-
-  // hour hand
-  handsCtx.beginPath();
-  handsCtx.lineCap = 'round';
-  handsCtx.strokeStyle = 'rgba(255,180,180,0.95)';
-  handsCtx.lineWidth = Math.max(3, radius*0.08);
-  handsCtx.moveTo(cx,cy);
-  handsCtx.lineTo(cx + Math.cos(hourAngle)*radius*0.45, cy + Math.sin(hourAngle)*radius*0.45);
-  handsCtx.stroke();
-
-  // minute hand
-  handsCtx.beginPath();
-  handsCtx.strokeStyle = 'rgba(255,120,120,0.98)';
-  handsCtx.lineWidth = Math.max(2, radius*0.056);
-  handsCtx.moveTo(cx,cy);
-  handsCtx.lineTo(cx + Math.cos(minAngle)*radius*0.65, cy + Math.sin(minAngle)*radius*0.65);
-  handsCtx.stroke();
-
-  // second hand (thin)
-  handsCtx.beginPath();
-  handsCtx.strokeStyle = 'rgba(255,60,60,1)';
-  handsCtx.lineWidth = Math.max(1.2, radius*0.028);
-  handsCtx.moveTo(cx - Math.cos(secAngle)*radius*0.06, cy - Math.sin(secAngle)*radius*0.06);
-  handsCtx.lineTo(cx + Math.cos(secAngle)*radius*0.82, cy + Math.sin(secAngle)*radius*0.82);
-  handsCtx.stroke();
-
-  // center dot
-  handsCtx.beginPath();
-  handsCtx.fillStyle = 'rgba(255,200,200,1)';
-  handsCtx.arc(cx,cy, Math.max(2, radius*0.03), 0, Math.PI*2);
-  handsCtx.fill();
-
-  // optional small counterweight tail for second
-  handsCtx.beginPath();
-  handsCtx.fillStyle = 'rgba(255,80,80,0.95)';
-  handsCtx.arc(cx - Math.cos(secAngle)*radius*0.06, cy - Math.sin(secAngle)*radius*0.06, Math.max(2, radius*0.02), 0, Math.PI*2);
-  handsCtx.fill();
-
-  // digital display update (days/h/m/s/tierce) - example using difference to some target if set
-  const digitalEl = $('digitalClock');
-  // if targetDate set, show countdown; otherwise show live hh:mm:ss:ms
-  if(window._targetDate){
-    const diff = window._targetDate.getTime() - Date.now();
-    if(diff <= 0){ digitalEl.textContent = '000d : 00h : 00m : 00s : 00'; }
-    else {
-      const tierces = Math.floor((diff % 1000) / 10);
-      const totalSec = Math.floor(diff / 1000);
-      const s = totalSec % 60;
-      const m = Math.floor((totalSec/60) % 60);
-      const h2 = Math.floor((totalSec/3600) % 24);
-      const d = Math.floor(totalSec / (3600*24));
-      digitalEl.textContent = `${String(d).padStart(3,'0')}d : ${String(h2).padStart(2,'0')}h : ${String(m).padStart(2,'0')}m : ${String(s).padStart(2,'0')}s : ${String(tierces).padStart(2,'0')}`;
-    }
-  } else {
-    // show live time as fallback
-    digitalEl.textContent = `${String(now.getDate()).padStart(3,'0')}d : ${String(now.getHours()).padStart(2,'0')}h : ${String(now.getMinutes()).padStart(2,'0')}m : ${String(now.getSeconds()).padStart(2,'0')}s : ${String(Math.floor(ms/10)).padStart(2,'0')}`;
-  }
-
-  // a tick sound on second edge (optional)
-  if(seconds !== lastTickSec){
-    lastTickSec = seconds;
-    if(window._tickSound) {
-      try { window._tickSound.currentTime = 0; window._tickSound.play(); } catch(e){}
-    }
-  }
-
-  requestAnimationFrame(drawHands);
-}
-
-/* very slow rotation for the horloge image to add weight */
-let imgRot = 0;
-function rotateImageLoop(){
-  imgRot += 0.02; // degrees per frame approx
-  horlogeImg.style.transform = `rotate(${imgRot}deg)`;
-  requestAnimationFrame(rotateImageLoop);
-}
-
-/* ------------- initialise and animate ------------- */
-function init(){
-  resizeBG();
-  resizeHandsCanvas();
-  // start loops
-  drawInfernal(0.06);
-  rotateImageLoop();
-  drawHands();
-}
-init();
-
-/* animate infernal based on audio intensity (tie to bass later); keep update loop */
-(function infernalLoop(){
-  requestAnimationFrame(infernalLoop);
-  // call drawInfernal with a subtle breathing intensity
-  const base = (Math.sin(Date.now()*0.0009) + 1)/2 * 0.18; // slow breathing base
-  drawInfernal(base);
-})();
-
-/* ------------- gears gentle spin (CSS via transform) ------------- */
-(function spinGears(){
-  const gA = $('gearA'), gB = $('gearB'), gC = $('gearC');
-  let a = 0;
-  function loop(){
-    a += 0.4;
-    if(gA) gA.style.transform = `rotate(${a}deg)`;
-    if(gB) gB.style.transform = `rotate(${-a*0.8}deg)`;
-    if(gC) gC.style.transform = `rotate(${a*1.2}deg)`;
-    requestAnimationFrame(loop);
-  }
-  loop();
-})();
-
-/* ------------- optional tick sound (place tick.mp3 in root) ------------- */
-try {
-  window._tickSound = new Audio('tick.mp3');
-  window._tickSound.volume = 0.45;
-} catch(e){ window._tickSound = null; }
-
-/* ------------- Predict / Random date logic (deterministic hash) ------------- */
-function hashCode(str){ let h = 2166136261>>>0; for(let i=0;i<str.length;i++){ h ^= str.charCodeAt(i); h = Math.imul(h,16777619)>>>0;} return h; }
-function daysOffsetFromBirthString(birthStr){ const seed = hashCode(birthStr); return (seed % 365000) + 1; }
-function setTargetFromBirthString(birthStr){
-  const birth = new Date(birthStr + 'T00:00:00');
-  if(isNaN(birth)) return false;
-  const offsetDays = daysOffsetFromBirthString(birthStr);
-  window._targetDate = new Date(birth.getTime() + offsetDays * 24*60*60*1000);
-  $('result').textContent = `Date prédite : ${window._targetDate.toDateString()} (offset ${offsetDays} j)`;
-  return true;
-}
-$('predictBtn').addEventListener('click', ()=>{
-  const v = $('birthdate').value;
-  if(!v){ alert('Veuillez entrer une date de naissance'); return; }
-  if(!setTargetFromBirthString(v)) alert('Date invalide');
-});
-$('randomBtn').addEventListener('click', ()=>{
-  const seed = Math.floor(Math.random()*1000000);
-  const offset = (seed % 365000) + 1;
-  window._targetDate = new Date(Date.now() + offset * 24*60*60*1000);
-  $('result').textContent = `Date prédite (random): ${window._targetDate.toDateString()}`;
-});
-
-/* ------------- Audio: file picker -> analyser -> visualizer & bg intensity ------------- */
-const filePicker = $('filePicker'), playBtn = $('playBtn'), pauseBtn = $('pauseBtn'), vol = $('vol');
-const audioViz = $('audioViz'), audioCtx = { ctx:null }, vctx = audioViz.getContext('2d');
-let audioEl=null, analyser=null, dataArr=null, bufferLen=0, sourceNode=null, raf=null;
-
-function resizeAudioViz(){ audioViz.width = Math.min(window.innerWidth - 40, 1400); audioViz.height = 140; }
-window.addEventListener('resize', resizeAudioViz);
-resizeAudioViz();
-
-filePicker.addEventListener('change', (e)=>{
-  const f = e.target.files[0];
-  if(!f) return;
-  if(audioEl){ audioEl.pause(); audioEl = null; if(analyser && audioCtx.ctx) try{ audioCtx.ctx.close(); }catch(e){} }
-  const url = URL.createObjectURL(f);
-  audioEl = new Audio(url);
-  audioEl.crossOrigin = 'anonymous';
-  audioEl.loop = false;
-  audioEl.volume = parseFloat(vol.value || 0.7);
-
-  // setup audio context & analyser
-  audioCtx.ctx = new (window.AudioContext || window.webkitAudioContext)();
-  analyser = audioCtx.ctx.createAnalyser();
-  analyser.fftSize = 1024;
-  bufferLen = analyser.frequencyBinCount;
-  dataArr = new Uint8Array(bufferLen);
-  sourceNode = audioCtx.ctx.createMediaElementSource(audioEl);
-  sourceNode.connect(analyser);
-  analyser.connect(audioCtx.ctx.destination);
-
-  // enable controls
-  playBtn.disabled = false; pauseBtn.disabled = true;
-  playBtn.textContent = 'Play';
-  playBtn.onclick = async ()=>{
-    if(audioCtx.ctx.state === 'suspended') await audioCtx.ctx.resume();
-    audioEl.play();
-    playBtn.disabled = true; pauseBtn.disabled = false;
-    visualLoop();
-  };
-  pauseBtn.onclick = ()=>{ if(audioEl){ audioEl.pause(); playBtn.disabled = false; pauseBtn.disabled = true; } };
-  vol.addEventListener('input', ()=>{ if(audioEl) audioEl.volume = parseFloat(vol.value); });
-
-  // auto-play attempt
-  audioEl.play().then(()=>{ playBtn.disabled = true; pauseBtn.disabled = false; visualLoop(); }).catch(()=>{ /* autoplay blocked */ });
-});
-
-function visualLoop(){
-  if(!analyser) return;
-  analyser.getByteFrequencyData(dataArr);
-
-  // draw simple bars
-  const w = audioViz.width, h = audioViz.height;
-  vctx.clearRect(0,0,w,h);
-  const barCount = Math.min(80, bufferLen);
-  const step = Math.floor(bufferLen / barCount);
-  let x = 0, bassSum = 0, bassCount = 0;
-  const barW = Math.max(2, (w / barCount) - 2);
-
-  for(let i=0;i<barCount;i++){
-    const v = dataArr[i*step];
-    const barH = (v/255) * h;
-    const hue = 20 + (v/255)*40;
-    vctx.fillStyle = `hsl(${hue} 100% 50%)`;
-    vctx.fillRect(x, h - barH, barW, barH);
-    if(i < Math.floor(barCount*0.12)){ bassSum += v; bassCount++; }
-    x += barW + 2;
-  }
-
-  const bassAvg = bassCount? (bassSum / bassCount) / 255 : 0;
-  // use bassAvg to drive infernal intensity (0..1)
-  const intensity = clamp(bassAvg*2.2 + 0.02, 0, 1);
-  drawInfernal(intensity);
-
-  // optionally pulse title glow stronger
-  const title = document.querySelector('.title');
-  const glow = 12 + Math.round(intensity*36);
-  title.style.textShadow = `0 0 ${glow}px rgba(255,60,60,${0.6 + intensity*0.4}), 0 0 ${glow*2}px rgba(255,20,20,${0.18 + intensity*0.3})`;
-
-  // animate zombie poster shake (if large bass)
-  if(bassAvg > 0.42){
-    const img = $('horlogeImg');
-    img.animate([{ transform: 'translate(-50%, -2px) scale(1.01)' }, { transform: 'translate(0,0) scale(1)' }], { duration: 360, easing: 'ease-out' });
-  }
-
-  raf = requestAnimationFrame(visualLoop);
-}
-
-/* Cleanup on unload */
-window.addEventListener('beforeunload', ()=>{ if(raf) cancelAnimationFrame(raf); if(audioCtx.ctx) try{ audioCtx.ctx.close(); }catch(e){} });
-</script>
+  <script src="script.js"></script>
 </body>
 </html>
