@@ -1,54 +1,125 @@
-:root{
-  --accent:#ff2a2a;
-  --muted:#bdbdbd;
-  --bg:#050405;
+body {
+  margin: 0;
+  padding: 0;
+  background: radial-gradient(circle at top, #1a0000, #000);
+  color: #fff;
+  font-family: 'Orbitron', sans-serif;
+  overflow: hidden;
 }
-*{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;background:var(--bg);color:#fff;font-family:Inter, "Orbitron", system-ui, monospace;overflow:hidden}
 
-/* TOP */
-#top{position:relative;height:60vh;min-height:360px;display:flex;align-items:center;justify-content:center;overflow:hidden;background:linear-gradient(180deg, rgba(20,0,0,0.9), rgba(0,0,0,1));border-bottom:1px solid rgba(255,40,40,0.05)}
-#bgCanvas{position:absolute;inset:0;z-index:0;width:100%;height:100%}
+.container {
+  text-align: center;
+  padding-top: 60px;
+  position: relative;
+  z-index: 2;
+}
 
-/* gears top-right */
-.gears{position:absolute;right:18px;top:14px;z-index:60;display:flex;flex-direction:column;gap:8px;pointer-events:none}
-.gear{width:56px;height:56px;background:url('gears.png') center/contain no-repeat;filter:drop-shadow(0 8px 18px rgba(255,140,80,0.08));opacity:0.95}
+.title {
+  color: #ff2a2a;
+  text-shadow: 0 0 25px #ff0000;
+  font-size: 26px;
+  animation: glow 2s infinite alternate;
+}
 
-/* robot top-left */
-.robot-wrap{position:absolute;left:12px;top:12px;z-index:50}
-#robotImg{width:3cm;height:3cm;object-fit:contain;border-radius:6px;box-shadow:0 10px 40px rgba(0,0,0,0.6)}
+@keyframes glow {
+  from { text-shadow: 0 0 10px #ff0000; }
+  to { text-shadow: 0 0 30px #ff4444; }
+}
 
-/* horloge image center/back */
-#horlogeImg{position:relative;z-index:15;width:520px;max-width:86%;filter:contrast(120%) saturate(120%);opacity:0.92;pointer-events:none;transform-origin:center}
-#handsCanvas{position:absolute;z-index:20;pointer-events:none;width:520px;max-width:86%;height:auto}
+.countdown {
+  font-size: 4rem;
+  color: red;
+  text-shadow: 0 0 25px #ff0000;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 15px;
+  padding: 10px 25px;
+  display: inline-block;
+}
 
-/* zombie poster behind */
-#zombiePoster{position:absolute;left:50%;top:18%;transform:translateX(-50%);width:70%;max-width:900px;z-index:10;opacity:0.25;filter:contrast(120%) saturate(120%);pointer-events:none}
+.subtitle {
+  font-size: 0.9rem;
+  color: #aaa;
+  margin-bottom: 10px;
+}
 
-/* center block */
-.center-block{position:relative;z-index:30;text-align:center;pointer-events:none}
-.title{font-family:'Orbitron',sans-serif;font-size:20px;color:var(--accent);text-shadow:0 0 12px rgba(255,40,40,0.6);margin-bottom:8px}
-#digitalClock{font-family:'Share Tech Mono',monospace;font-size:44px;color:var(--accent);text-shadow:0 0 26px rgba(255,60,60,0.34);background:rgba(0,0,0,0.35);padding:10px 20px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);letter-spacing:1px}
+.controls {
+  margin: 10px;
+}
 
-/* controls */
-.controls{position:relative;z-index:40;margin-top:12px}
-.controls input[type=date]{padding:8px 10px;border-radius:8px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.03);color:#fff}
-.btn{padding:8px 12px;border-radius:8px;background:var(--accent);color:#111;border:0;cursor:pointer;margin-left:8px;font-weight:700}
-.ghost{background:transparent;color:var(--muted);border:1px solid rgba(255,255,255,0.03)}
-#result{margin-top:8px;color:var(--muted);font-size:13px}
+button {
+  background-color: #ff2a2a;
+  border: none;
+  color: white;
+  padding: 8px 14px;
+  margin: 5px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+button:hover {
+  background-color: #ff5555;
+}
 
-/* BOTTOM */
-#bottom{height:40vh;padding:18px;background:linear-gradient(180deg,#050000,#000);display:flex;flex-direction:column;align-items:center;gap:12px;justify-content:flex-start}
-.audio-controls{display:flex;gap:10px;align-items:center}
-.file-picker{padding:8px 12px;border-radius:8px;background:transparent;border:1px dashed rgba(255,255,255,0.06);color:var(--muted)}
-.volLabel{display:flex;align-items:center;gap:8px;color:var(--muted)}
-#audioViz{width:100%;max-width:1200px;height:140px;border-radius:8px;background:radial-gradient(circle at 50% 30%, #200 0%, #000 100%);display:block}
+.media-controls {
+  position: absolute;
+  bottom: 20px;
+  width: 100%;
+  text-align: center;
+  z-index: 2;
+}
 
-/* responsive */
-@media (max-width:900px){
-  #horlogeImg{width:360px}
-  #handsCanvas{width:360px}
-  #digitalClock{font-size:28px}
-  .gear{width:44px;height:44px}
-  #robotImg{width:2.2cm;height:2.2cm}
+/* --- IMAGE ANIMATIONS --- */
+.zombie {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 480px;
+  opacity: 0.8;
+  z-index: 1;
+}
+
+.robot {
+  position: absolute;
+  top: 10px;
+  left: 20px;
+  width: 70px;
+  animation: float 3s ease-in-out infinite;
+  z-index: 3;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(8px); }
+}
+
+/* Horloge (rotor) */
+.horloge {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  width: 140px;
+  filter: drop-shadow(0 0 20px gold);
+  animation: spin 6s linear infinite;
+  transform-origin: center center;
+  z-index: 3;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Gears background */
+.gears {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100px;
+  opacity: 0.3;
+  animation: rotateGears 12s linear infinite;
+}
+
+@keyframes rotateGears {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
 }
