@@ -1,55 +1,41 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Ruine Time — Horloge & Audio</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tino Andaina.js</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <section id="top">
-    <canvas id="bgCanvas" aria-hidden="true"></canvas>
+  <div class="container">
+    <h1 class="title">Tino Andaina.js</h1>
 
-    <div class="gears" aria-hidden="true">
-      <div class="gear" id="gearA"></div>
-      <div class="gear" id="gearB"></div>
-      <div class="gear" id="gearC"></div>
-    </div>
-
-    <div class="robot-wrap">
-      <img id="robotImg" src="robot.png" alt="robot">
-    </div>
-
-    <img id="horlogeImg" src="horloge.png" alt="horloge">
-
-    <canvas id="handsCanvas" aria-hidden="true"></canvas>
-
-    <img id="zombiePoster" src="zombie.png" alt="zombie">
-
-    <div class="center-block">
-      <div class="title">Tino Andaina.js</div>
-      <div id="digitalClock">000d : 00h : 00m : 00s : 00</div>
-
+    <div class="chronometre-container">
+      <div id="countdown" class="countdown">000d : 00h : 00m : 00s : 00</div>
+      <p class="subtitle">Chronomètre de Vie</p>
       <div class="controls">
-        <input id="birthdate" type="date" />
-        <button id="predictBtn" class="btn">Predict</button>
-        <button id="randomBtn" class="btn ghost">Random</button>
+        <input type="date" id="birthdate">
+        <button id="predictBtn">Predict</button>
+        <button id="randomBtn">Random</button>
       </div>
-      <div id="result" class="muted"></div>
+      <p id="result"></p>
     </div>
-  </section>
 
-  <section id="bottom">
-    <div class="audio-controls">
-      <input id="filePicker" type="file" accept="audio/*" class="file-picker" />
-      <button id="playBtn" class="btn" disabled>Play</button>
-      <button id="pauseBtn" class="btn" disabled>Pause</button>
-      <label class="volLabel">Vol
-        <input id="vol" type="range" min="0" max="1" step="0.01" value="0.7">
-      </label>
+    <div class="media-controls">
+      <input type="file" id="fileInput" accept="audio/*">
+      <button id="playBtn">▶ Play</button>
+      <button id="pauseBtn">⏸ Pause</button>
+      <button id="stopBtn">⏹ Stop</button>
+      <label for="volumeSlider">Vol</label>
+      <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.5">
     </div>
-    <canvas id="audioViz"></canvas>
-  </section>
+  </div>
+
+  <!-- Effets visuels -->
+  <img src="zombie.png" class="zombie" alt="Zombie">
+  <img src="robot.png" class="robot" alt="Robot">
+  <img src="horloge.png" class="horloge" alt="Horloge">
+  <img src="gears.png" class="gears" alt="Gears">
 
   <script src="script.js"></script>
 </body>
